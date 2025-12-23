@@ -63,6 +63,7 @@ export default function CircuitBuilder() {
           value={numQubits}
           onChange={(e) => setNumQubits(Number(e.target.value))}
         />
+        <GatePalette onAdd={addGate} numQubits={numQubits} />
         <button onClick={handleSimulate} disabled={!gates.length || isSimulating}>
           {isSimulating ? "Simulating..." : "Simulate"}
         </button>
