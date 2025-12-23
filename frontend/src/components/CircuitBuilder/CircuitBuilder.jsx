@@ -21,8 +21,16 @@ export default function CircuitBuilder() {
   } = useCircuitStore();
 
   const handleAddGate = (type) => {
-    // simple: always target qubit 0 for now
-    addGate({ type, qubits: [0], params: [] });
+    // CNOT needs 2 qubits, others need 1
+    if (type === "CNOT") {
+      if (numQubits < 2) {
+        setError("CNOT gate requires at least 2 qubits");
+        return;
+      }
+      addGate({ type, qubits: [0, 1], params: [] });
+    } else {
+      addGate({ type, qubits: [0], params: [] });
+    }
   };
 
   const handleSimulate = async () => {
@@ -36,7 +44,9 @@ export default function CircuitBuilder() {
       });
       setResults(res.data);
     } catch (e) {
-      setError(e.message || "Simulation failed");
+      const errorMsg = e.response?.data?.detail || e.message || "Simulation failed";
+      setError(errorMsg);
+      console.error("Simulation error:", e.response?.data);
     } finally {
       setIsSimulating(false);
     }
@@ -60,7 +70,16 @@ export default function CircuitBuilder() {
       </div>
       <GatePalette onAdd={handleAddGate} />
       <CircuitCanvas gates={gates} numQubits={numQubits} onRemove={removeGate} />
-      {error && <div>{error}</div>}
+      {error && <div style={{ 
+        color: 'red', 
+        padding: '1rem', 
+        background: '#ffebee', 
+        border: '1px solid red', 
+        borderRadius: '4px',
+        margin: '1rem 0'
+      }}>
+        <strong>Error:</strong> {error}
+      </div>}
       <MeasurementChart results={results} />
     </div>
   );
