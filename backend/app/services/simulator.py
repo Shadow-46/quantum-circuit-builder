@@ -30,6 +30,10 @@ class SimulatorService:
                 qc.ry(params[0], qs[0])
             elif t == "RZ" and params:
                 qc.rz(params[0], qs[0])
+            elif t == "S":
+                qc.s(qs[0])
+            elif t == "T":
+                qc.t(qs[0])
             # extend later
         qc.measure(range(num_qubits), range(num_qubits))
         return qc
