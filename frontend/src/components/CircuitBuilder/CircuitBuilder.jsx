@@ -54,7 +54,7 @@ export default function CircuitBuilder() {
 
   return (
     <div>
-      <div>
+      <div className="circuit-controls">
         <label>Qubits: </label>
         <input
           type="number"
@@ -63,13 +63,12 @@ export default function CircuitBuilder() {
           value={numQubits}
           onChange={(e) => setNumQubits(Number(e.target.value))}
         />
-        <GatePalette onAdd={addGate} numQubits={numQubits} />
         <button onClick={handleSimulate} disabled={!gates.length || isSimulating}>
           {isSimulating ? "Simulating..." : "Simulate"}
         </button>
         <button onClick={clear}>Clear</button>
       </div>
-      <GatePalette onAdd={handleAddGate} />
+      <GatePalette onAdd={handleAddGate} numQubits={numQubits} />
       <CircuitCanvas gates={gates} numQubits={numQubits} onRemove={removeGate} />
       {error && <div style={{ 
         color: 'red', 
