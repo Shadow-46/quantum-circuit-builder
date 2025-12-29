@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.config import settings
-from app.routes import circuit, simulate, algorithms
+from app.routes import circuit, simulate, algorithms, export
 
 app = FastAPI(
     title="Quantum Circuit Builder API",
@@ -19,6 +19,7 @@ app.add_middleware(
 app.include_router(circuit.router, prefix="/api/circuits", tags=["circuits"])
 app.include_router(simulate.router, prefix="/api/simulate", tags=["simulate"])
 app.include_router(algorithms.router, prefix="/api/algorithms", tags=["algorithms"])
+app.include_router(export.router, prefix="/api/export", tags=["export"])
 
 @app.get("/health")
 def health():

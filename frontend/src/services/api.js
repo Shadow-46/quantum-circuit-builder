@@ -15,6 +15,12 @@ export const circuitAPI = {
 
 export const algorithmAPI = {
   list: () => api.get("/algorithms/"),
+  listTemplates: () => api.get("/algorithms/templates"),
+  getTemplate: (id) => api.get(`/algorithms/templates/${id}`),
+};
+
+export const exportAPI = {
+  exportQiskit: (payload) => api.post("/export/qiskit", payload),
 };
 
 export default api;

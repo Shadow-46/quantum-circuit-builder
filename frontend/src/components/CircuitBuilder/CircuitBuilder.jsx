@@ -1,8 +1,10 @@
+import { useState, useEffect } from "react";
 import { useCircuitStore } from "../../store/circuitStore";
-import { simulationAPI } from "../../services/api";
+import { simulationAPI, circuitAPI, exportAPI, algorithmAPI } from "../../services/api";
 import GatePalette from "./GatePalette";
 import CircuitCanvas from "./CircuitCanvas";
 import MeasurementChart from "../Visualizations/MeasurementChart";
+import CircuitStats from "../Common/CircuitStats";
 
 export default function CircuitBuilder() {
   const {
@@ -18,19 +20,61 @@ export default function CircuitBuilder() {
     setIsSimulating,
     error,
     setError,
+    loadCircuit,
+    undo,
+    redo,
+    canUndo,
+    canRedo,
   } = useCircuitStore();
 
-  const handleAddGate = (type) => {
-    // CNOT needs 2 qubits, others need 1
-    if (type === "CNOT") {
-      if (numQubits < 2) {
-        setError("CNOT gate requires at least 2 qubits");
-        return;
+  const [showSaveModal, setShowSaveModal] = useState(false);
+  const [showLoadModal, setShowLoadModal] = useState(false);
+  const [showTemplateModal, setShowTemplateModal] = useState(false);
+  const [showExportModal, setShowExportModal] = useState(false);
+  const [circuitName, setCircuitName] = useState("");
+  const [circuitDescription, setCircuitDescription] = useState("");
+  const [savedCircuits, setSavedCircuits] = useState([]);
+  const [templates, setTemplates] = useState([]);
+  const [exportCode, setExportCode] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+
+  // Load templates on mount
+  useEffect(() => {
+    const loadTemplates = async () => {
+      try {
+        const res = await algorithmAPI.listTemplates();
+        setTemplates(Object.entries(res.data.templates).map(([id, template]) => ({
+          id,
+          ...template,
+        })));
+      } catch (e) {
+        console.error("Failed to load templates:", e);
       }
-      addGate({ type, qubits: [0, 1], params: [] });
-    } else {
-      addGate({ type, qubits: [0], params: [] });
-    }
+    };
+    loadTemplates();
+  }, []);
+
+  // Keyboard shortcuts
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      // Ctrl/Cmd + Z for undo
+      if ((e.ctrlKey || e.metaKey) && e.key === 'z' && !e.shiftKey) {
+        e.preventDefault();
+        if (canUndo()) undo();
+      }
+      // Ctrl/Cmd + Shift + Z or Ctrl/Cmd + Y for redo
+      if (((e.ctrlKey || e.metaKey) && e.shiftKey && e.key === 'z') || 
+          ((e.ctrlKey || e.metaKey) && e.key === 'y')) {
+        e.preventDefault();
+        if (canRedo()) redo();
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [undo, redo, canUndo, canRedo]);
+
+  const handleAddGate = (gate) => {
+    addGate(gate);
   };
 
   const handleSimulate = async () => {
@@ -52,35 +96,261 @@ export default function CircuitBuilder() {
     }
   };
 
+  const handleSave = async () => {
+    if (!circuitName.trim()) {
+      setError("Circuit name is required");
+      return;
+    }
+    
+    try {
+      setIsLoading(true);
+      await circuitAPI.create({
+        name: circuitName,
+        description: circuitDescription,
+        num_qubits: numQubits,
+        gates,
+      });
+      setShowSaveModal(false);
+      setCircuitName("");
+      setCircuitDescription("");
+      setError(null);
+      alert("Circuit saved successfully!");
+    } catch (e) {
+      const errorMsg = e.response?.data?.detail || e.message || "Save failed";
+      setError(errorMsg);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleLoadList = async () => {
+    try {
+      setIsLoading(true);
+      const res = await circuitAPI.list();
+      setSavedCircuits(res.data);
+      setShowLoadModal(true);
+    } catch (e) {
+      const errorMsg = e.response?.data?.detail || e.message || "Failed to load circuits";
+      setError(errorMsg);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleLoadCircuit = (circuit) => {
+    loadCircuit(circuit.num_qubits, circuit.gates);
+    setShowLoadModal(false);
+    setError(null);
+  };
+
+  const handleExport = async () => {
+    try {
+      setIsLoading(true);
+      const res = await exportAPI.exportQiskit({
+        num_qubits: numQubits,
+        gates,
+      });
+      setExportCode(res.data.code);
+      setShowExportModal(true);
+    } catch (e) {
+      const errorMsg = e.response?.data?.detail || e.message || "Export failed";
+      setError(errorMsg);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleCopyCode = () => {
+    navigator.clipboard.writeText(exportCode);
+    alert("Code copied to clipboard!");
+  };
+
+  const handleLoadTemplate = (template) => {
+    loadCircuit(template.num_qubits, template.gates);
+    setShowTemplateModal(false);
+    setError(null);
+  };
+
   return (
-    <div>
+    <div className="circuit-builder">
       <div className="circuit-controls">
-        <label>Qubits: </label>
-        <input
-          type="number"
-          min={1}
-          max={12}
-          value={numQubits}
-          onChange={(e) => setNumQubits(Number(e.target.value))}
-        />
-        <button onClick={handleSimulate} disabled={!gates.length || isSimulating}>
-          {isSimulating ? "Simulating..." : "Simulate"}
-        </button>
-        <button onClick={clear}>Clear</button>
+        <div className="control-group">
+          <label>Qubits: </label>
+          <input
+            type="number"
+            min={1}
+            max={12}
+            value={numQubits}
+            onChange={(e) => setNumQubits(Number(e.target.value))}
+          />
+        </div>
+        <div className="action-buttons">
+          <button onClick={() => setShowTemplateModal(true)} className="btn-secondary">
+            📚 Templates
+          </button>
+          <button onClick={handleSimulate} disabled={!gates.length || isSimulating} className="btn-primary">
+            {isSimulating ? "Simulating..." : "🔬 Simulate"}
+          </button>
+          <button onClick={handleExport} disabled={!gates.length} className="btn-secondary">
+            📤 Export
+          </button>
+          <button onClick={() => setShowSaveModal(true)} disabled={!gates.length} className="btn-secondary">
+            💾 Save
+          </button>
+          <button onClick={handleLoadList} className="btn-secondary">
+            📂 Load
+          </button>
+          <div className="undo-redo-group">
+            <button onClick={undo} disabled={!canUndo()} className="btn-icon" title="Undo (Ctrl+Z)">
+              ↶
+            </button>
+            <button onClick={redo} disabled={!canRedo()} className="btn-icon" title="Redo (Ctrl+Shift+Z)">
+              ↷
+            </button>
+          </div>
+          <button onClick={clear} disabled={!gates.length} className="btn-danger">
+            🗑️ Clear
+          </button>
+        </div>
       </div>
+      
       <GatePalette onAdd={handleAddGate} numQubits={numQubits} />
       <CircuitCanvas gates={gates} numQubits={numQubits} onRemove={removeGate} />
-      {error && <div style={{ 
-        color: 'red', 
-        padding: '1rem', 
-        background: '#ffebee', 
-        border: '1px solid red', 
-        borderRadius: '4px',
-        margin: '1rem 0'
-      }}>
-        <strong>Error:</strong> {error}
-      </div>}
-      <MeasurementChart results={results} />
+      
+      {error && (
+        <div className="error-message">
+          <strong>⚠️ Error:</strong> {error}
+        </div>
+      )}
+      
+      <div className="results-section">
+        <CircuitStats gates={gates} numQubits={numQubits} />
+        <MeasurementChart results={results} />
+      </div>
+
+      {/* Save Modal */}
+      {showSaveModal && (
+        <div className="modal-overlay" onClick={() => setShowSaveModal(false)}>
+          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+            <h3>💾 Save Circuit</h3>
+            <div className="form-group">
+              <label>Circuit Name *</label>
+              <input
+                type="text"
+                value={circuitName}
+                onChange={(e) => setCircuitName(e.target.value)}
+                placeholder="e.g., Bell State"
+                autoFocus
+              />
+            </div>
+            <div className="form-group">
+              <label>Description</label>
+              <textarea
+                value={circuitDescription}
+                onChange={(e) => setCircuitDescription(e.target.value)}
+                placeholder="Optional description..."
+                rows={3}
+              />
+            </div>
+            <div className="modal-actions">
+              <button onClick={handleSave} disabled={isLoading} className="btn-primary">
+                {isLoading ? "Saving..." : "Save"}
+              </button>
+              <button onClick={() => setShowSaveModal(false)} className="btn-secondary">
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Load Modal */}
+      {showLoadModal && (
+        <div className="modal-overlay" onClick={() => setShowLoadModal(false)}>
+          <div className="modal-content modal-large" onClick={(e) => e.stopPropagation()}>
+            <h3>📂 Load Circuit</h3>
+            {savedCircuits.length === 0 ? (
+              <p className="empty-state">No saved circuits found</p>
+            ) : (
+              <ul className="circuit-list">
+                {savedCircuits.map((circuit) => (
+                  <li key={circuit.id} className="circuit-item">
+                    <div className="circuit-info">
+                      <strong>{circuit.name}</strong>
+                      {circuit.description && <p>{circuit.description}</p>}
+                      <small>
+                        {circuit.num_qubits} qubits • {circuit.gates.length} gates
+                      </small>
+                    </div>
+                    <button 
+                      onClick={() => handleLoadCircuit(circuit)}
+                      className="btn-primary btn-sm"
+                    >
+                      Load
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            )}
+            <div className="modal-actions">
+              <button onClick={() => setShowLoadModal(false)} className="btn-secondary">
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Template Modal */}
+      {showTemplateModal && (
+        <div className="modal-overlay" onClick={() => setShowTemplateModal(false)}>
+          <div className="modal-content modal-large" onClick={(e) => e.stopPropagation()}>
+            <h3>📚 Circuit Templates</h3>
+            <div className="template-grid">
+              {templates.map((template) => (
+                <div key={template.id} className="template-card">
+                  <h4>{template.name}</h4>
+                  <p className="template-description">{template.description}</p>
+                  <div className="template-meta">
+                    <span className="badge badge-{template.difficulty}">{template.difficulty}</span>
+                    <span className="badge">{template.category}</span>
+                    <span>{template.num_qubits} qubits • {template.gates.length} gates</span>
+                  </div>
+                  <button 
+                    onClick={() => handleLoadTemplate(template)}
+                    className="btn-primary btn-block"
+                  >
+                    Load Template
+                  </button>
+                </div>
+              ))}
+            </div>
+            <div className="modal-actions">
+              <button onClick={() => setShowTemplateModal(false)} className="btn-secondary">
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Export Modal */}
+      {showExportModal && (
+        <div className="modal-overlay" onClick={() => setShowExportModal(false)}>
+          <div className="modal-content modal-large" onClick={(e) => e.stopPropagation()}>
+            <h3>📤 Export to Qiskit</h3>
+            <pre className="code-block">{exportCode}</pre>
+            <div className="modal-actions">
+              <button onClick={handleCopyCode} className="btn-primary">
+                📋 Copy to Clipboard
+              </button>
+              <button onClick={() => setShowExportModal(false)} className="btn-secondary">
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
