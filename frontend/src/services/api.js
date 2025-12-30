@@ -6,6 +6,10 @@ const api = axios.create({
 
 export const simulationAPI = {
   simulate: (payload) => api.post("/simulate/", payload),
+  getStatevector: (payload) => api.post("/simulate/statevector", payload),
+  getBloch: (payload, qubitIndex = 0) => 
+    api.post(`/simulate/bloch?qubit_index=${qubitIndex}`, payload),
+  getDensityMatrix: (payload) => api.post("/simulate/density-matrix", payload),
 };
 
 export const circuitAPI = {

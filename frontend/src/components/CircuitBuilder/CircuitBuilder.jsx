@@ -5,6 +5,9 @@ import GatePalette from "./GatePalette";
 import CircuitCanvas from "./CircuitCanvas";
 import MeasurementChart from "../Visualizations/MeasurementChart";
 import CircuitStats from "../Common/CircuitStats";
+import StatevectorView from "../Visualizations/StatevectorView";
+import BlochSphere from "../Visualizations/BlochSphere";
+import DensityMatrixView from "../Visualizations/DensityMatrixView";
 
 export default function CircuitBuilder() {
   const {
@@ -37,6 +40,11 @@ export default function CircuitBuilder() {
   const [templates, setTemplates] = useState([]);
   const [exportCode, setExportCode] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [statevector, setStatevector] = useState(null);
+  const [blochData, setBlochData] = useState(null);
+  const [densityMatrix, setDensityMatrix] = useState(null);
+  const [selectedQubit, setSelectedQubit] = useState(0);
+  const [viewMode, setViewMode] = useState('measurements'); // 'measurements', 'statevector', 'bloch', 'density'
 
   // Load templates on mount
   useEffect(() => {
@@ -171,6 +179,57 @@ export default function CircuitBuilder() {
     setError(null);
   };
 
+  const handleGetStatevector = async () => {
+    try {
+      setIsLoading(true);
+      const res = await simulationAPI.getStatevector({
+        num_qubits: numQubits,
+        gates,
+      });
+      setStatevector(res.data);
+      setViewMode('statevector');
+    } catch (e) {
+      const errorMsg = e.response?.data?.detail || e.message || "Statevector calculation failed";
+      setError(errorMsg);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleGetBloch = async () => {
+    try {
+      setIsLoading(true);
+      const res = await simulationAPI.getBloch(
+        { num_qubits: numQubits, gates },
+        selectedQubit
+      );
+      setBlochData(res.data);
+      setViewMode('bloch');
+    } catch (e) {
+      const errorMsg = e.response?.data?.detail || e.message || "Bloch calculation failed";
+      setError(errorMsg);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleGetDensityMatrix = async () => {
+    try {
+      setIsLoading(true);
+      const res = await simulationAPI.getDensityMatrix({
+        num_qubits: numQubits,
+        gates,
+      });
+      setDensityMatrix(res.data);
+      setViewMode('density');
+    } catch (e) {
+      const errorMsg = e.response?.data?.detail || e.message || "Density matrix calculation failed";
+      setError(errorMsg);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   return (
     <div className="circuit-builder">
       <div className="circuit-controls">
@@ -223,9 +282,59 @@ export default function CircuitBuilder() {
         </div>
       )}
       
+      {/* Visualization Mode Selector */}
+      {gates.length > 0 && (
+        <div className="view-mode-selector">
+          <button 
+            onClick={() => setViewMode('measurements')} 
+            className={`view-tab ${viewMode === 'measurements' ? 'active' : ''}`}
+          >
+            📊 Measurements
+          </button>
+          <button 
+            onClick={handleGetStatevector} 
+            disabled={isLoading}
+            className={`view-tab ${viewMode === 'statevector' ? 'active' : ''}`}
+          >
+            🌊 Statevector
+          </button>
+          <button 
+            onClick={handleGetBloch} 
+            disabled={isLoading || numQubits > 3}
+            className={`view-tab ${viewMode === 'bloch' ? 'active' : ''}`}
+            title={numQubits > 3 ? 'Bloch sphere works best with 1-3 qubits' : ''}
+          >
+            ⚛️ Bloch Sphere
+          </button>
+          <button 
+            onClick={handleGetDensityMatrix} 
+            disabled={isLoading || numQubits > 3}
+            className={`view-tab ${viewMode === 'density' ? 'active' : ''}`}
+            title={numQubits > 3 ? 'Density matrix view limited to ≤3 qubits' : ''}
+          >
+            📊 Density Matrix
+          </button>
+          {viewMode === 'bloch' && numQubits > 1 && (
+            <select 
+              value={selectedQubit} 
+              onChange={(e) => setSelectedQubit(Number(e.target.value))}
+              className="qubit-selector-inline"
+            >
+              {Array.from({ length: numQubits }).map((_, i) => (
+                <option key={i} value={i}>Qubit {i}</option>
+              ))}
+            </select>
+          )}
+        </div>
+      )}
+      
       <div className="results-section">
         <CircuitStats gates={gates} numQubits={numQubits} />
-        <MeasurementChart results={results} />
+        
+        {viewMode === 'measurements' && <MeasurementChart results={results} />}
+        {viewMode === 'statevector' && <StatevectorView statevector={statevector} />}
+        {viewMode === 'bloch' && <BlochSphere blochData={blochData} />}
+        {viewMode === 'density' && <DensityMatrixView densityMatrix={densityMatrix} />}
       </div>
 
       {/* Save Modal */}
