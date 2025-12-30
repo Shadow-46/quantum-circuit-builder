@@ -78,3 +78,63 @@ def simulate(req: SimulationRequest):
         raise
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Simulation error: {str(e)}")
+
+
+@router.post("/statevector")
+def get_statevector(req: SimulationRequest):
+    """Get the statevector of the circuit without measurement."""
+    try:
+        # Validate all gates
+        for idx, gate in enumerate(req.gates):
+            gate_dict = gate.model_dump()
+            validate_gate(gate_dict, req.num_qubits, idx)
+        
+        gates = [g.model_dump() for g in req.gates]
+        result = sim.get_statevector(gates, req.num_qubits)
+        return result
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Statevector calculation error: {str(e)}")
+
+
+@router.post("/bloch")
+def get_bloch(req: SimulationRequest, qubit_index: int = 0):
+    """Get Bloch sphere coordinates for a single qubit."""
+    try:
+        if qubit_index >= req.num_qubits:
+            raise HTTPException(
+                status_code=400,
+                detail=f"Qubit index {qubit_index} out of range for {req.num_qubits} qubits"
+            )
+        
+        # Validate all gates
+        for idx, gate in enumerate(req.gates):
+            gate_dict = gate.model_dump()
+            validate_gate(gate_dict, req.num_qubits, idx)
+        
+        gates = [g.model_dump() for g in req.gates]
+        result = sim.get_bloch_vector(gates, qubit_index)
+        return result
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Bloch calculation error: {str(e)}")
+
+
+@router.post("/density-matrix")
+def get_density_matrix(req: SimulationRequest):
+    """Get the density matrix of the circuit."""
+    try:
+        # Validate all gates
+        for idx, gate in enumerate(req.gates):
+            gate_dict = gate.model_dump()
+            validate_gate(gate_dict, req.num_qubits, idx)
+        
+        gates = [g.model_dump() for g in req.gates]
+        result = sim.get_density_matrix(gates, req.num_qubits)
+        return result
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Density matrix calculation error: {str(e)}")
