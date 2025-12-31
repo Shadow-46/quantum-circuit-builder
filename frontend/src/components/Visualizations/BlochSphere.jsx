@@ -17,64 +17,84 @@ export default function BlochSphere({ blochData }) {
     // Clear canvas
     ctx.clearRect(0, 0, width, height);
 
-    // Draw background
-    ctx.fillStyle = '#f7fafc';
+    // Draw background with gradient
+    const gradient = ctx.createRadialGradient(centerX, centerY, 0, centerX, centerY, radius * 1.5);
+    gradient.addColorStop(0, '#1a2a3a');
+    gradient.addColorStop(1, '#0f1f2f');
+    ctx.fillStyle = gradient;
     ctx.fillRect(0, 0, width, height);
 
-    // Draw sphere outline
+    // Draw sphere outline with glow
+    ctx.shadowColor = 'rgba(102, 126, 234, 0.3)';
+    ctx.shadowBlur = 15;
     ctx.beginPath();
     ctx.arc(centerX, centerY, radius, 0, 2 * Math.PI);
-    ctx.strokeStyle = '#cbd5e0';
+    ctx.strokeStyle = 'rgba(102, 126, 234, 0.6)';
     ctx.lineWidth = 2;
     ctx.stroke();
+    ctx.shadowBlur = 0;
 
     // Draw equator
     ctx.beginPath();
     ctx.ellipse(centerX, centerY, radius, radius * 0.3, 0, 0, 2 * Math.PI);
-    ctx.strokeStyle = '#e2e8f0';
+    ctx.strokeStyle = 'rgba(255, 255, 255, 0.15)';
     ctx.lineWidth = 1;
     ctx.stroke();
 
-    // Draw axes
+    // Draw axes with vibrant colors
     const axisLength = radius * 1.2;
     
-    // X axis (red)
-    ctx.strokeStyle = '#fc8181';
-    ctx.lineWidth = 2;
+    // X axis (bright red/orange)
+    ctx.strokeStyle = '#ff6b6b';
+    ctx.lineWidth = 3;
+    ctx.shadowColor = 'rgba(255, 107, 107, 0.5)';
+    ctx.shadowBlur = 10;
     ctx.beginPath();
     ctx.moveTo(centerX - axisLength, centerY);
     ctx.lineTo(centerX + axisLength, centerY);
     ctx.stroke();
-    ctx.fillStyle = '#fc8181';
-    ctx.font = 'bold 14px Arial';
-    ctx.fillText('X', centerX + axisLength + 10, centerY + 5);
+    ctx.shadowBlur = 0;
+    ctx.fillStyle = '#ff6b6b';
+    ctx.font = 'bold 16px Arial';
+    ctx.fillText('X', centerX + axisLength + 12, centerY + 6);
 
-    // Y axis (green) - perspective view
+    // Y axis (bright green) - perspective view
     const yAxisX = radius * 0.6;
-    ctx.strokeStyle = '#68d391';
-    ctx.lineWidth = 2;
+    ctx.strokeStyle = '#51cf66';
+    ctx.lineWidth = 3;
+    ctx.shadowColor = 'rgba(81, 207, 102, 0.5)';
+    ctx.shadowBlur = 10;
     ctx.beginPath();
     ctx.moveTo(centerX - yAxisX, centerY);
     ctx.lineTo(centerX + yAxisX, centerY);
     ctx.stroke();
-    ctx.fillStyle = '#68d391';
-    ctx.fillText('Y', centerX + yAxisX + 10, centerY + 5);
+    ctx.shadowBlur = 0;
+    ctx.fillStyle = '#51cf66';
+    ctx.font = 'bold 16px Arial';
+    ctx.fillText('Y', centerX + yAxisX + 12, centerY + 6);
 
-    // Z axis (blue)
-    ctx.strokeStyle = '#63b3ed';
-    ctx.lineWidth = 2;
+    // Z axis (bright blue/cyan)
+    ctx.strokeStyle = '#4dabf7';
+    ctx.lineWidth = 3;
+    ctx.shadowColor = 'rgba(77, 171, 247, 0.5)';
+    ctx.shadowBlur = 10;
     ctx.beginPath();
     ctx.moveTo(centerX, centerY + axisLength);
     ctx.lineTo(centerX, centerY - axisLength);
     ctx.stroke();
-    ctx.fillStyle = '#63b3ed';
-    ctx.fillText('Z', centerX + 5, centerY - axisLength - 10);
+    ctx.shadowBlur = 0;
+    ctx.fillStyle = '#4dabf7';
+    ctx.font = 'bold 16px Arial';
+    ctx.fillText('Z', centerX + 8, centerY - axisLength - 12);
 
-    // Draw |0⟩ and |1⟩ labels
-    ctx.fillStyle = '#2d3748';
-    ctx.font = '16px Arial';
-    ctx.fillText('|0⟩', centerX + 10, centerY - radius - 10);
-    ctx.fillText('|1⟩', centerX + 10, centerY + radius + 20);
+    // Draw |0⟩ and |1⟩ labels with glow
+    ctx.fillStyle = '#ffffff';
+    ctx.font = 'bold 18px Arial';
+    ctx.shadowColor = 'rgba(255, 255, 255, 0.5)';
+    ctx.shadowBlur = 8;
+    ctx.fillText('|0⟩', centerX + 12, centerY - radius - 12);
+    ctx.fillText('|1⟩', centerX + 12, centerY + radius + 24);
+    ctx.shadowBlur = 0;
 
     // Draw Bloch vector
     const { x, y, z } = blochData;
@@ -83,26 +103,32 @@ export default function BlochSphere({ blochData }) {
     const vecX = centerX + x * radius;
     const vecY = centerY - z * radius;  // Negative because canvas Y is inverted
     
-    // Draw vector line
-    ctx.strokeStyle = '#667eea';
-    ctx.lineWidth = 3;
+    // Draw vector line with glow
+    ctx.strokeStyle = '#ffd43b';
+    ctx.lineWidth = 4;
+    ctx.shadowColor = 'rgba(255, 212, 59, 0.6)';
+    ctx.shadowBlur = 15;
     ctx.beginPath();
     ctx.moveTo(centerX, centerY);
     ctx.lineTo(vecX, vecY);
     ctx.stroke();
+    ctx.shadowBlur = 0;
 
-    // Draw vector endpoint
+    // Draw vector endpoint with glow
     ctx.beginPath();
-    ctx.arc(vecX, vecY, 8, 0, 2 * Math.PI);
-    ctx.fillStyle = '#667eea';
+    ctx.arc(vecX, vecY, 10, 0, 2 * Math.PI);
+    ctx.fillStyle = '#ffd43b';
+    ctx.shadowColor = 'rgba(255, 212, 59, 0.8)';
+    ctx.shadowBlur = 20;
     ctx.fill();
+    ctx.shadowBlur = 0;
     ctx.strokeStyle = '#ffffff';
     ctx.lineWidth = 2;
     ctx.stroke();
 
     // Draw projection on XY plane (dashed)
     ctx.setLineDash([5, 5]);
-    ctx.strokeStyle = '#a0aec0';
+    ctx.strokeStyle = 'rgba(255, 255, 255, 0.3)';
     ctx.lineWidth = 1;
     ctx.beginPath();
     ctx.moveTo(vecX, vecY);
@@ -142,25 +168,25 @@ export default function BlochSphere({ blochData }) {
       <div className="bloch-coordinates">
         <div className="coord-row">
           <span className="coord-label">X:</span>
-          <span className="coord-value" style={{ color: '#fc8181' }}>
+          <span className="coord-value" style={{ color: '#ff6b6b' }}>
             {blochData.x.toFixed(3)}
           </span>
         </div>
         <div className="coord-row">
           <span className="coord-label">Y:</span>
-          <span className="coord-value" style={{ color: '#68d391' }}>
+          <span className="coord-value" style={{ color: '#51cf66' }}>
             {blochData.y.toFixed(3)}
           </span>
         </div>
         <div className="coord-row">
           <span className="coord-label">Z:</span>
-          <span className="coord-value" style={{ color: '#63b3ed' }}>
+          <span className="coord-value" style={{ color: '#4dabf7' }}>
             {blochData.z.toFixed(3)}
           </span>
         </div>
         <div className="coord-row">
           <span className="coord-label">Length:</span>
-          <span className="coord-value">{vectorLength}</span>
+          <span className="coord-value" style={{ color: '#ffd43b' }}>{vectorLength}</span>
         </div>
         <div className="coord-row">
           <span className="coord-label">θ:</span>

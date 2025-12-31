@@ -560,40 +560,46 @@ button:disabled {
 /* View Mode Selector */
 .view-mode-selector {
   display: flex;
-  gap: 0.5rem;
+  gap: 0.75rem;
   margin-bottom: 1.5rem;
-  padding: 0.75rem;
-  background: white;
-  border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  padding: 0.875rem;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.25);
   flex-wrap: wrap;
   align-items: center;
 }
 
 .view-tab {
-  padding: 0.6rem 1.2rem;
-  border: 2px solid #e2e8f0;
-  background: white;
-  border-radius: 6px;
-  font-size: 0.9rem;
-  font-weight: 500;
+  padding: 0.75rem 1.4rem;
+  border: 2px solid rgba(255, 255, 255, 0.25);
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  font-size: 0.95rem;
+  font-weight: 600;
   cursor: pointer;
-  transition: all 0.2s;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  color: white;
+  backdrop-filter: blur(10px);
 }
 
 .view-tab:hover:not(:disabled) {
-  border-color: #667eea;
-  background: #f7fafc;
+  border-color: rgba(255, 255, 255, 0.5);
+  background: rgba(255, 255, 255, 0.2);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
 }
 
 .view-tab.active {
-  background: #667eea;
-  color: white;
-  border-color: #667eea;
+  background: white;
+  color: #667eea;
+  border-color: white;
+  transform: translateY(-3px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
 }
 
 .view-tab:disabled {
-  opacity: 0.4;
+  opacity: 0.35;
   cursor: not-allowed;
 }
 
@@ -607,51 +613,63 @@ button:disabled {
 
 /* Statevector View */
 .statevector-view {
-  padding: 1.5rem;
-  background: white;
-  border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  padding: 2rem;
+  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
 .statevector-view h3 {
   margin-top: 0;
-  margin-bottom: 1.5rem;
-  color: #2d3748;
+  margin-bottom: 1.75rem;
+  color: #1a202c;
+  font-size: 1.3rem;
 }
 
 .statevector-list {
   display: flex;
   flex-direction: column;
-  gap: 0.75rem;
+  gap: 0.875rem;
 }
 
 .statevector-item {
   display: grid;
-  grid-template-columns: 80px 1fr auto auto;
-  gap: 1rem;
+  grid-template-columns: 90px 1fr auto auto;
+  gap: 1.25rem;
   align-items: center;
-  padding: 0.75rem;
-  background: #f7fafc;
-  border-radius: 6px;
+  padding: 1rem 1.25rem;
+  background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+  border-radius: 10px;
+  border-left: 4px solid #667eea;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.statevector-item:hover {
+  transform: translateX(6px);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+  border-left-color: #764ba2;
 }
 
 .state-label {
   font-family: 'Courier New', monospace;
-  font-weight: 600;
-  font-size: 1rem;
+  font-weight: 700;
+  font-size: 1.05rem;
 }
 
 .basis-state {
   color: #667eea;
+  text-shadow: 0 1px 2px rgba(102, 126, 234, 0.2);
 }
 
 .amplitude-bar-container {
   flex: 1;
-  height: 32px;
-  background: #edf2f7;
-  border-radius: 4px;
+  height: 36px;
+  background: linear-gradient(to right, #e8eaf6 0%, #c5cae9 100%);
+  border-radius: 6px;
   overflow: hidden;
   position: relative;
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.08);
 }
 
 .amplitude-bar {
@@ -659,16 +677,18 @@ button:disabled {
   display: flex;
   align-items: center;
   justify-content: flex-end;
-  padding-right: 0.5rem;
-  transition: width 0.3s ease;
+  padding-right: 0.75rem;
+  transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   min-width: 60px;
+  background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+  box-shadow: 0 2px 4px rgba(102, 126, 234, 0.3);
 }
 
 .amplitude-value {
   color: white;
-  font-weight: 600;
-  font-size: 0.85rem;
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+  font-weight: 700;
+  font-size: 0.9rem;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
 }
 
 .state-info {
@@ -710,93 +730,121 @@ button:disabled {
 
 /* Bloch Sphere */
 .bloch-sphere {
-  padding: 1.5rem;
-  background: white;
-  border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  padding: 2rem;
+  background: linear-gradient(135deg, #0f2027 0%, #203a43 50%, #2c5364 100%);
+  border-radius: 16px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
 }
 
 .bloch-sphere h3 {
   margin-top: 0;
-  margin-bottom: 1rem;
-  color: #2d3748;
+  margin-bottom: 1.5rem;
+  color: #ffffff;
+  font-size: 1.3rem;
+  text-align: center;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
 }
 
 .bloch-canvas {
   display: block;
-  margin: 0 auto 1.5rem;
-  border-radius: 8px;
+  margin: 0 auto 2rem;
+  border-radius: 12px;
+  border: 3px solid rgba(255, 255, 255, 0.1);
+  background: radial-gradient(circle at center, #1a2a3a 0%, #0f1f2f 100%);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5), inset 0 2px 8px rgba(255, 255, 255, 0.05);
 }
 
 .bloch-coordinates {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: 0.75rem;
-  background: #f7fafc;
-  padding: 1rem;
-  border-radius: 6px;
+  gap: 1rem;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%);
+  padding: 1.5rem;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(10px);
 }
 
 .coord-row {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  padding: 0.5rem;
 }
 
 .coord-label {
-  font-weight: 600;
-  color: #4a5568;
-  margin-right: 0.5rem;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.7);
+  margin-right: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-size: 0.9rem;
 }
 
 .coord-value {
   font-family: 'Courier New', monospace;
-  font-weight: 600;
-  color: #2d3748;
+  font-weight: 700;
+  color: #4fc3f7;
+  font-size: 1.2rem;
+  text-shadow: 0 2px 8px rgba(79, 195, 247, 0.4);
 }
 
 /* Density Matrix */
 .density-matrix-view {
-  padding: 1.5rem;
-  background: white;
-  border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  padding: 2rem;
+  background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+  border-radius: 16px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
 }
 
 .density-matrix-view h3 {
   margin-top: 0;
-  margin-bottom: 1rem;
-  color: #2d3748;
+  margin-bottom: 1.5rem;
+  color: #ffffff;
+  font-size: 1.3rem;
+  text-align: center;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
 }
 
 .matrix-info {
   display: flex;
-  gap: 2rem;
-  margin-bottom: 1.5rem;
-  padding: 1rem;
-  background: #f7fafc;
-  border-radius: 6px;
+  gap: 2.5rem;
+  margin-bottom: 2rem;
+  padding: 1.25rem;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%);
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(10px);
 }
 
 .matrix-stat {
   display: flex;
-  gap: 0.5rem;
+  gap: 0.75rem;
   align-items: center;
+  color: rgba(255, 255, 255, 0.9);
+  font-weight: 600;
+}
+
+.matrix-stat strong {
+  color: #4fc3f7;
+  font-size: 1.1rem;
+  text-shadow: 0 2px 4px rgba(79, 195, 247, 0.3);
 }
 
 .matrix-container {
   overflow-x: auto;
-  margin-bottom: 1.5rem;
+  margin-bottom: 2rem;
 }
 
 .density-matrix {
   display: grid;
-  gap: 2px;
-  background: #cbd5e0;
-  padding: 2px;
-  border-radius: 4px;
+  gap: 3px;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.15) 0%, rgba(255, 255, 255, 0.08) 100%);
+  padding: 4px;
+  border-radius: 8px;
   width: fit-content;
   margin: 0 auto;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
 }
 
 .matrix-cell {
@@ -804,16 +852,19 @@ button:disabled {
   display: flex;
   align-items: center;
   justify-content: center;
-  border: 2px solid transparent;
-  transition: all 0.2s;
-  min-width: 20px;
-  min-height: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  min-width: 24px;
+  min-height: 24px;
+  border-radius: 4px;
+  cursor: pointer;
 }
 
 .matrix-cell:hover {
-  transform: scale(1.1);
+  transform: scale(1.2);
   z-index: 10;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 6px 20px rgba(255, 255, 255, 0.3);
+  border-color: rgba(255, 255, 255, 0.4);
 }
 
 .cell-content {
@@ -825,12 +876,13 @@ button:disabled {
 
 .cell-mag {
   font-weight: 700;
-  color: #2d3748;
+  color: rgba(255, 255, 255, 0.95);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
 }
 
 .cell-complex {
   font-size: 0.65rem;
-  color: #718096;
+  color: rgba(255, 255, 255, 0.7);
   font-family: 'Courier New', monospace;
 }
 

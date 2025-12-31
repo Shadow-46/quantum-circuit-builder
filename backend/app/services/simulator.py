@@ -1,7 +1,7 @@
 from typing import Dict, List
 from qiskit import QuantumCircuit
 from qiskit_aer import AerSimulator
-from qiskit.quantum_info import Statevector, DensityMatrix
+from qiskit.quantum_info import Statevector, DensityMatrix, partial_trace
 import numpy as np
 
 class SimulatorService:
@@ -86,9 +86,12 @@ class SimulatorService:
         if num_qubits == 1:
             rho = DensityMatrix(statevector)
         else:
-            # Partial trace to get single qubit state
-            qubits_to_trace = [i for i in range(num_qubits) if i != qubit_index]
-            rho = DensityMatrix(statevector).partial_trace(qubits_to_trace)
+            # Use partial_trace function to get single qubit state
+            # partial_trace expects the qubits to keep, so we keep qubit_index
+            rho_full = DensityMatrix(statevector)
+            # Trace out all qubits except qubit_index
+            qubits_to_keep = [qubit_index]
+            rho = partial_trace(rho_full, list(range(num_qubits))[:qubit_index] + list(range(num_qubits))[qubit_index+1:])
         
         # Calculate Bloch vector coordinates
         # For a single qubit: |ψ⟩ = α|0⟩ + β|1⟩
