@@ -8,8 +8,11 @@ import CircuitStats from "../Common/CircuitStats";
 import StatevectorView from "../Visualizations/StatevectorView";
 import BlochSphere from "../Visualizations/BlochSphere";
 import DensityMatrixView from "../Visualizations/DensityMatrixView";
+import TutorialPanel from "../Learning/TutorialPanel";
+import GateTooltip from "../Learning/GateTooltip";
+import tutorials from "../../data/tutorials";
 
-export default function CircuitBuilder() {
+export default function CircuitBuilder({ activeTutorial }) {
   const {
     numQubits,
     gates,
@@ -45,6 +48,25 @@ export default function CircuitBuilder() {
   const [densityMatrix, setDensityMatrix] = useState(null);
   const [selectedQubit, setSelectedQubit] = useState(0);
   const [viewMode, setViewMode] = useState('measurements'); // 'measurements', 'statevector', 'bloch', 'density'
+  
+  // Tutorial state
+  const [tutorialMode, setTutorialMode] = useState(false);
+  const [currentTutorial, setCurrentTutorial] = useState(null);
+  const [currentStep, setCurrentStep] = useState(0);
+  const [hoveredGate, setHoveredGate] = useState(null);
+
+  // Initialize tutorial if activeTutorial is provided
+  useEffect(() => {
+    if (activeTutorial) {
+      const tutorial = tutorials.find(t => t.id === activeTutorial);
+      if (tutorial) {
+        setCurrentTutorial(tutorial);
+        setTutorialMode(true);
+        setCurrentStep(0);
+        clear(); // Clear circuit to start fresh
+      }
+    }
+  }, [activeTutorial]);
 
   // Load templates on mount
   useEffect(() => {
@@ -459,6 +481,26 @@ export default function CircuitBuilder() {
             </div>
           </div>
         </div>
+      )}
+
+      {/* Tutorial Panel */}
+      {tutorialMode && currentTutorial && (
+        <TutorialPanel
+          tutorial={currentTutorial}
+          currentStep={currentStep}
+          onNextStep={() => setCurrentStep(prev => Math.min(prev + 1, currentTutorial.steps.length - 1))}
+          onPrevStep={() => setCurrentStep(prev => Math.max(prev - 1, 0))}
+          onClose={() => {
+            setTutorialMode(false);
+            setCurrentTutorial(null);
+            setCurrentStep(0);
+          }}
+        />
+      )}
+
+      {/* Gate Tooltip (shows when hovering over gates in palette during tutorial) */}
+      {hoveredGate && (
+        <GateTooltip gate={hoveredGate} />
       )}
     </div>
   );

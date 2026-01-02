@@ -4,11 +4,12 @@ export default function Navigation() {
   return (
     <nav className="navigation">
       <div className="nav-brand">
-        <Link to="/">Quantum Circuit Builder</Link>
+        <Link to="/">⚛️ Quantum Circuit Builder</Link>
       </div>
       <ul className="nav-links">
         <li><Link to="/">Home</Link></li>
-        <li><Link to="/builder">Builder</Link></li>
+        <li><Link to="/builder">Circuit Builder</Link></li>
+        <li><Link to="/tutorials">📚 Tutorials</Link></li>
       </ul>
     </nav>
   );
