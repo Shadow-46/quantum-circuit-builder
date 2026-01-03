@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { useCircuitStore } from "../../store/circuitStore";
+import useProgressStore from "../../store/progressStore";
 import { simulationAPI, circuitAPI, exportAPI, algorithmAPI } from "../../services/api";
 import GatePalette from "./GatePalette";
 import CircuitCanvas from "./CircuitCanvas";
@@ -32,6 +33,18 @@ export default function CircuitBuilder({ activeTutorial }) {
     canUndo,
     canRedo,
   } = useCircuitStore();
+
+  // Progress tracking
+  const {
+    incrementCircuitsCreated,
+    incrementGatesUsed,
+    incrementSimulations,
+    completeTutorial,
+    updateTutorialProgress,
+    incrementTemplatesUsed,
+    updateMaxQubits,
+    incrementCircuitsSaved,
+  } = useProgressStore();
 
   const [showSaveModal, setShowSaveModal] = useState(false);
   const [showLoadModal, setShowLoadModal] = useState(false);
@@ -117,6 +130,8 @@ export default function CircuitBuilder({ activeTutorial }) {
         shots: 1024,
       });
       setResults(res.data);
+      incrementSimulations();
+      updateMaxQubits(numQubits);
     } catch (e) {
       const errorMsg = e.response?.data?.detail || e.message || "Simulation failed";
       setError(errorMsg);
@@ -144,6 +159,7 @@ export default function CircuitBuilder({ activeTutorial }) {
       setCircuitName("");
       setCircuitDescription("");
       setError(null);
+      incrementCircuitsSaved();
       alert("Circuit saved successfully!");
     } catch (e) {
       const errorMsg = e.response?.data?.detail || e.message || "Save failed";
@@ -199,6 +215,8 @@ export default function CircuitBuilder({ activeTutorial }) {
     loadCircuit(template.num_qubits, template.gates);
     setShowTemplateModal(false);
     setError(null);
+    incrementTemplatesUsed();
+    incrementCircuitsCreated();
   };
 
   const handleGetStatevector = async () => {
@@ -489,7 +507,7 @@ export default function CircuitBuilder({ activeTutorial }) {
           tutorial={currentTutorial}
           currentStep={currentStep}
           onNextStep={() => setCurrentStep(prev => Math.min(prev + 1, currentTutorial.steps.length - 1))}
-          onPrevStep={() => setCurrentStep(prev => Math.max(prev - 1, 0))}
+          onPreviousStep={() => setCurrentStep(prev => Math.max(prev - 1, 0))}
           onClose={() => {
             setTutorialMode(false);
             setCurrentTutorial(null);

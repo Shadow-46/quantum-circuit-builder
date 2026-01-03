@@ -1,8 +1,10 @@
 import { useState } from "react";
+import useProgressStore from "../../store/progressStore";
 
 export default function GatePalette({ onAdd, numQubits }) {
   const [selectedQubit, setSelectedQubit] = useState(0);
   const [rotationAngle, setRotationAngle] = useState(Math.PI / 4);
+  const { incrementGatesUsed, incrementCircuitsCreated } = useProgressStore();
 
   const GATES = [
     { type: "H", desc: "Hadamard", numQubits: 1 },
@@ -27,6 +29,8 @@ export default function GatePalette({ onAdd, numQubits }) {
       const target = (selectedQubit + 1) % numQubits;
       onAdd({ type: gate.type, qubits: [selectedQubit, target], params });
     }
+    // Track gate usage
+    incrementGatesUsed(gate.type);
   };
 
   return (

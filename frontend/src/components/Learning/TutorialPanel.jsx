@@ -1,8 +1,17 @@
 import { useState, useEffect } from 'react';
+import useProgressStore from '../../store/progressStore';
 import '../../styles/components.css';
 
-export default function TutorialPanel({ tutorial, currentStep, onNextStep, onPreviousStep, onComplete, onClose }) {
+export default function TutorialPanel({ tutorial, currentStep, onNextStep, onPreviousStep, onClose }) {
   const [showHint, setShowHint] = useState(false);
+  const { completeTutorial, updateTutorialProgress } = useProgressStore();
+
+  // Track tutorial progress
+  useEffect(() => {
+    if (tutorial) {
+      updateTutorialProgress(tutorial.id, currentStep);
+    }
+  }, [tutorial, currentStep, updateTutorialProgress]);
 
   if (!tutorial) return null;
 
@@ -10,6 +19,11 @@ export default function TutorialPanel({ tutorial, currentStep, onNextStep, onPre
   const isLastStep = currentStep === tutorial.steps.length - 1;
   const isFirstStep = currentStep === 0;
   const progress = ((currentStep + 1) / tutorial.steps.length) * 100;
+
+  const handleComplete = () => {
+    completeTutorial(tutorial.id);
+    onClose();
+  };
 
   return (
     <div className="tutorial-panel">
@@ -93,7 +107,7 @@ export default function TutorialPanel({ tutorial, currentStep, onNextStep, onPre
         {isLastStep ? (
           <button 
             className="btn-primary"
-            onClick={onComplete}
+            onClick={handleComplete}
           >
             ✓ Complete Tutorial
           </button>
