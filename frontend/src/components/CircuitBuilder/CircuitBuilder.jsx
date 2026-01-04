@@ -11,6 +11,7 @@ import BlochSphere from "../Visualizations/BlochSphere";
 import DensityMatrixView from "../Visualizations/DensityMatrixView";
 import TutorialPanel from "../Learning/TutorialPanel";
 import GateTooltip from "../Learning/GateTooltip";
+import ExportMenu from "../Common/ExportMenu";
 import tutorials from "../../data/tutorials";
 
 export default function CircuitBuilder({ activeTutorial }) {
@@ -50,6 +51,7 @@ export default function CircuitBuilder({ activeTutorial }) {
   const [showLoadModal, setShowLoadModal] = useState(false);
   const [showTemplateModal, setShowTemplateModal] = useState(false);
   const [showExportModal, setShowExportModal] = useState(false);
+  const [showExportMenu, setShowExportMenu] = useState(false);
   const [circuitName, setCircuitName] = useState("");
   const [circuitDescription, setCircuitDescription] = useState("");
   const [savedCircuits, setSavedCircuits] = useState([]);
@@ -291,7 +293,10 @@ export default function CircuitBuilder({ activeTutorial }) {
             {isSimulating ? "Simulating..." : "🔬 Simulate"}
           </button>
           <button onClick={handleExport} disabled={!gates.length} className="btn-secondary">
-            📤 Export
+            � Export Code
+          </button>
+          <button onClick={() => setShowExportMenu(true)} disabled={!gates.length} className="btn-secondary">
+            📤 Export & Share
           </button>
           <button onClick={() => setShowSaveModal(true)} disabled={!gates.length} className="btn-secondary">
             💾 Save
@@ -519,6 +524,15 @@ export default function CircuitBuilder({ activeTutorial }) {
       {/* Gate Tooltip (shows when hovering over gates in palette during tutorial) */}
       {hoveredGate && (
         <GateTooltip gate={hoveredGate} />
+      )}
+
+      {/* Export Menu */}
+      {showExportMenu && (
+        <ExportMenu
+          numQubits={numQubits}
+          gates={gates}
+          onClose={() => setShowExportMenu(false)}
+        />
       )}
     </div>
   );
