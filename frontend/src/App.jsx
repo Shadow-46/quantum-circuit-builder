@@ -7,6 +7,7 @@ import ProfilePage from './pages/ProfilePage'
 import AlgorithmsPage from './pages/AlgorithmsPage'
 import Navigation from './components/Common/Navigation'
 import AchievementNotification from './components/Common/AchievementNotification'
+import WelcomeTour from './components/Common/WelcomeTour'
 import useProgressStore from './store/progressStore'
 import './App.css'
 
@@ -32,6 +33,7 @@ function App() {
       <div className="app">
         <Navigation />
         <AchievementNotification />
+        <WelcomeTour />
         <main>
           <Routes>
             <Route path="/" element={<HomePage />} />
