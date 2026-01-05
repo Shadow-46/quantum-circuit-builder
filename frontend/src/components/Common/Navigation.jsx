@@ -5,6 +5,12 @@ import HelpModal from './HelpModal';
 export default function Navigation() {
   const [showHelp, setShowHelp] = useState(false);
 
+  const handleShortcutsClick = () => {
+    // Trigger the '?' keyboard event to open shortcuts
+    const event = new KeyboardEvent('keydown', { key: '?' });
+    window.dispatchEvent(event);
+  };
+
   return (
     <>
       <nav className="navigation">
@@ -17,6 +23,15 @@ export default function Navigation() {
           <li><Link to="/algorithms">🧪 Algorithms</Link></li>
           <li><Link to="/tutorials">📚 Tutorials</Link></li>
           <li><Link to="/profile">👤 Profile</Link></li>
+          <li>
+            <button 
+              className="btn-shortcuts" 
+              onClick={handleShortcutsClick}
+              title="View keyboard shortcuts (Press ?)"
+            >
+              ⌨️
+            </button>
+          </li>
           <li>
             <button className="btn-help" onClick={() => setShowHelp(true)}>
               ❓ Help

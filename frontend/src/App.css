@@ -98,7 +98,8 @@ main {
   padding: 0.5rem 0;
 }
 
-.btn-help {
+.btn-help,
+.btn-shortcuts {
   background: linear-gradient(135deg, rgba(79, 172, 254, 0.2), rgba(0, 242, 254, 0.1));
   border: 1px solid rgba(79, 172, 254, 0.3);
   color: white;
@@ -109,7 +110,13 @@ main {
   transition: all 0.3s ease;
 }
 
-.btn-help:hover {
+.btn-shortcuts {
+  font-size: 1.2rem;
+  padding: 0.5rem 0.75rem;
+}
+
+.btn-help:hover,
+.btn-shortcuts:hover {
   background: linear-gradient(135deg, rgba(79, 172, 254, 0.3), rgba(0, 242, 254, 0.2));
   border-color: rgba(79, 172, 254, 0.5);
   transform: translateY(-2px);
