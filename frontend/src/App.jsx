@@ -8,6 +8,7 @@ import AlgorithmsPage from './pages/AlgorithmsPage'
 import Navigation from './components/Common/Navigation'
 import AchievementNotification from './components/Common/AchievementNotification'
 import WelcomeTour from './components/Common/WelcomeTour'
+import KeyboardShortcuts from './components/Common/KeyboardShortcuts'
 import useProgressStore from './store/progressStore'
 import './App.css'
 
@@ -34,6 +35,7 @@ function App() {
         <Navigation />
         <AchievementNotification />
         <WelcomeTour />
+        <KeyboardShortcuts />
         <main>
           <Routes>
             <Route path="/" element={<HomePage />} />
