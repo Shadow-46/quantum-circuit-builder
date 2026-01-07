@@ -6,42 +6,56 @@ export default function ExportMenu({ numQubits, gates, onClose }) {
   const [shareURL, setShareURL] = useState('');
   const [showShareModal, setShowShareModal] = useState(false);
   const [copied, setCopied] = useState(false);
+  const [isExporting, setIsExporting] = useState(false);
+  const [exportType, setExportType] = useState('');
   const circuitRef = useRef(null);
 
   const handleExportPNG = async () => {
+    setIsExporting(true);
+    setExportType('PNG');
     const circuitElement = document.querySelector('.circuit-canvas');
     if (circuitElement) {
       const success = await exportToPNG(circuitElement, `quantum-circuit-${Date.now()}.png`);
       if (success) {
-        alert('✅ Circuit exported as PNG!');
+        setTimeout(() => alert('✅ Circuit exported as PNG!'), 100);
       } else {
         alert('❌ Export failed. Please try again.');
       }
     }
+    setIsExporting(false);
+    setExportType('');
   };
 
   const handleExportSVG = async () => {
+    setIsExporting(true);
+    setExportType('SVG');
     const circuitElement = document.querySelector('.circuit-canvas');
     if (circuitElement) {
       const success = await exportToSVG(circuitElement, `quantum-circuit-${Date.now()}.svg`);
       if (success) {
-        alert('✅ Circuit exported as SVG!');
+        setTimeout(() => alert('✅ Circuit exported as SVG!'), 100);
       } else {
         alert('❌ Export failed. Please try again.');
       }
     }
+    setIsExporting(false);
+    setExportType('');
   };
 
   const handleCopyImage = async () => {
+    setIsExporting(true);
+    setExportType('Copy');
     const circuitElement = document.querySelector('.circuit-canvas');
     if (circuitElement) {
       const success = await copyToClipboard(circuitElement);
       if (success) {
-        alert('✅ Circuit image copied to clipboard!');
+        setTimeout(() => alert('✅ Circuit image copied to clipboard!'), 100);
       } else {
         alert('❌ Copy failed. Please try again.');
       }
     }
+    setIsExporting(false);
+    setExportType('');
   };
 
   const handleGenerateShareURL = () => {
@@ -71,27 +85,63 @@ export default function ExportMenu({ numQubits, gates, onClose }) {
         <div className="export-section">
           <h4>💾 Export as Image</h4>
           <div className="export-buttons">
-            <button className="btn-export" onClick={handleExportPNG}>
-              <span className="export-icon">🖼️</span>
+            <button 
+              className="btn-export" 
+              onClick={handleExportPNG}
+              disabled={isExporting}
+            >
+              <span className="export-icon">
+                {isExporting && exportType === 'PNG' ? (
+                  <span className="spinner-small"></span>
+                ) : (
+                  '🖼️'
+                )}
+              </span>
               <div>
                 <div className="export-label">PNG Image</div>
-                <div className="export-desc">High quality raster image</div>
+                <div className="export-desc">
+                  {isExporting && exportType === 'PNG' ? 'Exporting...' : 'High quality raster image'}
+                </div>
               </div>
             </button>
             
-            <button className="btn-export" onClick={handleExportSVG}>
-              <span className="export-icon">📐</span>
+            <button 
+              className="btn-export" 
+              onClick={handleExportSVG}
+              disabled={isExporting}
+            >
+              <span className="export-icon">
+                {isExporting && exportType === 'SVG' ? (
+                  <span className="spinner-small"></span>
+                ) : (
+                  '📐'
+                )}
+              </span>
               <div>
                 <div className="export-label">SVG Vector</div>
-                <div className="export-desc">Scalable vector graphics</div>
+                <div className="export-desc">
+                  {isExporting && exportType === 'SVG' ? 'Exporting...' : 'Scalable vector graphics'}
+                </div>
               </div>
             </button>
             
-            <button className="btn-export" onClick={handleCopyImage}>
-              <span className="export-icon">📋</span>
+            <button 
+              className="btn-export" 
+              onClick={handleCopyImage}
+              disabled={isExporting}
+            >
+              <span className="export-icon">
+                {isExporting && exportType === 'Copy' ? (
+                  <span className="spinner-small"></span>
+                ) : (
+                  '📋'
+                )}
+              </span>
               <div>
                 <div className="export-label">Copy Image</div>
-                <div className="export-desc">Copy to clipboard</div>
+                <div className="export-desc">
+                  {isExporting && exportType === 'Copy' ? 'Copying...' : 'Copy to clipboard'}
+                </div>
               </div>
             </button>
           </div>
