@@ -12,6 +12,7 @@ import DensityMatrixView from "../Visualizations/DensityMatrixView";
 import TutorialPanel from "../Learning/TutorialPanel";
 import GateTooltip from "../Learning/GateTooltip";
 import ExportMenu from "../Common/ExportMenu";
+import CircuitAnalyzer from "../Common/CircuitAnalyzer";
 import tutorials from "../../data/tutorials";
 
 export default function CircuitBuilder({ activeTutorial }) {
@@ -52,6 +53,7 @@ export default function CircuitBuilder({ activeTutorial }) {
   const [showTemplateModal, setShowTemplateModal] = useState(false);
   const [showExportModal, setShowExportModal] = useState(false);
   const [showExportMenu, setShowExportMenu] = useState(false);
+  const [showAnalyzer, setShowAnalyzer] = useState(false);
   const [circuitName, setCircuitName] = useState("");
   const [circuitDescription, setCircuitDescription] = useState("");
   const [savedCircuits, setSavedCircuits] = useState([]);
@@ -291,8 +293,9 @@ export default function CircuitBuilder({ activeTutorial }) {
           </button>
           <button onClick={handleSimulate} disabled={!gates.length || isSimulating} className="btn-primary">
             {isSimulating ? "Simulating..." : "🔬 Simulate"}
-          </button>
-          <button onClick={handleExport} disabled={!gates.length} className="btn-secondary">
+          </button>          <button onClick={() => setShowAnalyzer(true)} disabled={!gates.length} className="btn-secondary">
+            🔬 Analyze & Optimize
+          </button>          <button onClick={handleExport} disabled={!gates.length} className="btn-secondary">
             � Export Code
           </button>
           <button onClick={() => setShowExportMenu(true)} disabled={!gates.length} className="btn-secondary">
@@ -532,6 +535,21 @@ export default function CircuitBuilder({ activeTutorial }) {
           numQubits={numQubits}
           gates={gates}
           onClose={() => setShowExportMenu(false)}
+        />
+      )}
+
+      {/* Circuit Analyzer */}
+      {showAnalyzer && (
+        <CircuitAnalyzer
+          gates={gates}
+          numQubits={numQubits}
+          onApplyOptimization={(optimizedGates) => {
+            loadCircuit({
+              numQubits: numQubits,
+              gates: optimizedGates
+            });
+          }}
+          onClose={() => setShowAnalyzer(false)}
         />
       )}
     </div>

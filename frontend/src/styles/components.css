@@ -3060,3 +3060,542 @@ input:focus-visible {
   outline: 2px solid var(--quantum-electric);
   outline-offset: 2px;
 }
+
+/* Circuit Analyzer */
+.analyzer-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.85);
+  backdrop-filter: blur(4px);
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: fadeIn 0.2s ease;
+}
+
+.analyzer-modal {
+  background: linear-gradient(135deg, rgba(10, 14, 39, 0.98), rgba(20, 25, 50, 0.98));
+  border: 2px solid rgba(79, 172, 254, 0.3);
+  border-radius: 20px;
+  max-width: 900px;
+  width: 92%;
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 25px 80px rgba(79, 172, 254, 0.3);
+  animation: slideIn 0.3s ease;
+}
+
+.analyzer-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 2rem 2.5rem 1.5rem;
+  border-bottom: 1px solid rgba(79, 172, 254, 0.2);
+}
+
+.analyzer-header h2 {
+  color: white;
+  margin: 0;
+  font-size: 1.8rem;
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.analyzer-tabs {
+  display: flex;
+  gap: 0.5rem;
+  padding: 1rem 2.5rem 0;
+  border-bottom: 1px solid rgba(79, 172, 254, 0.2);
+}
+
+.analyzer-tab {
+  padding: 0.75rem 1.5rem;
+  background: transparent;
+  border: none;
+  border-bottom: 2px solid transparent;
+  color: rgba(255, 255, 255, 0.6);
+  cursor: pointer;
+  font-size: 0.95rem;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+.analyzer-tab:hover {
+  color: rgba(255, 255, 255, 0.9);
+  background: rgba(102, 126, 234, 0.1);
+}
+
+.analyzer-tab.active {
+  color: var(--quantum-electric);
+  border-bottom-color: var(--quantum-electric);
+  background: rgba(102, 126, 234, 0.15);
+}
+
+.analyzer-content {
+  padding: 2rem 2.5rem;
+  overflow-y: auto;
+  flex: 1;
+}
+
+.analyzer-section h3 {
+  color: white;
+  margin: 0 0 1.5rem 0;
+  font-size: 1.4rem;
+}
+
+.analyzer-section h4 {
+  color: rgba(255, 255, 255, 0.9);
+  margin: 1.5rem 0 1rem 0;
+  font-size: 1.1rem;
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.stat-card {
+  background: rgba(102, 126, 234, 0.1);
+  border: 1px solid rgba(79, 172, 254, 0.3);
+  border-radius: 12px;
+  padding: 1.5rem;
+  text-align: center;
+  transition: all 0.3s ease;
+}
+
+.stat-card:hover {
+  background: rgba(102, 126, 234, 0.15);
+  transform: translateY(-3px);
+}
+
+.stat-icon {
+  font-size: 2rem;
+  margin-bottom: 0.5rem;
+}
+
+.stat-value {
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--quantum-electric);
+  margin-bottom: 0.25rem;
+}
+
+.stat-label {
+  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.gate-distribution {
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.distribution-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.distribution-item {
+  display: grid;
+  grid-template-columns: 80px 1fr 40px;
+  align-items: center;
+  gap: 1rem;
+}
+
+.gate-name {
+  color: white;
+  font-weight: 600;
+  font-family: 'Courier New', monospace;
+}
+
+.distribution-bar {
+  height: 24px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.distribution-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #667eea, #764ba2);
+  transition: width 0.5s ease;
+}
+
+.gate-count {
+  color: rgba(255, 255, 255, 0.8);
+  font-weight: 600;
+  text-align: right;
+}
+
+.analyzer-actions {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  margin-top: 2rem;
+}
+
+.btn-analyze,
+.btn-analyze-large,
+.btn-apply {
+  padding: 0.75rem 2rem;
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  border: none;
+  border-radius: 10px;
+  color: white;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+}
+
+.btn-analyze-large {
+  padding: 1rem 3rem;
+  font-size: 1.1rem;
+}
+
+.btn-analyze:hover,
+.btn-analyze-large:hover,
+.btn-apply:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(102, 126, 234, 0.4);
+}
+
+.btn-cancel {
+  padding: 0.75rem 2rem;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 10px;
+  color: white;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.btn-cancel:hover {
+  background: rgba(255, 255, 255, 0.15);
+  transform: translateY(-2px);
+}
+
+.optimization-prompt {
+  text-align: center;
+  padding: 3rem 2rem;
+}
+
+.optimization-prompt p {
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 1.1rem;
+  margin-bottom: 2rem;
+}
+
+.optimization-summary {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 1rem;
+  margin-bottom: 2rem;
+  padding: 1.5rem;
+  background: rgba(102, 126, 234, 0.1);
+  border-radius: 12px;
+}
+
+.summary-stat {
+  text-align: center;
+}
+
+.summary-stat.highlight {
+  background: rgba(0, 255, 136, 0.1);
+  border: 1px solid rgba(0, 255, 136, 0.3);
+  border-radius: 8px;
+  padding: 0.5rem;
+}
+
+.summary-label {
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 0.9rem;
+  margin-bottom: 0.5rem;
+}
+
+.summary-value {
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: white;
+}
+
+.summary-value.success {
+  color: #00ff88;
+}
+
+.summary-value.warning {
+  color: #ff9500;
+}
+
+.optimizations-list {
+  margin-bottom: 2rem;
+}
+
+.optimization-item {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem;
+  background: rgba(0, 0, 0, 0.2);
+  border-left: 3px solid var(--quantum-electric);
+  border-radius: 8px;
+  margin-bottom: 0.75rem;
+}
+
+.opt-type {
+  background: rgba(102, 126, 234, 0.3);
+  padding: 0.25rem 0.75rem;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  text-transform: capitalize;
+  color: var(--quantum-electric);
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.opt-details {
+  color: rgba(255, 255, 255, 0.9);
+  flex: 1;
+  font-family: 'Courier New', monospace;
+}
+
+.opt-qubit {
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 0.85rem;
+}
+
+.no-optimization,
+.no-suggestions {
+  text-align: center;
+  padding: 3rem 2rem;
+}
+
+.no-optimization p,
+.no-suggestions p {
+  color: white;
+  font-size: 1.2rem;
+  margin-bottom: 0.5rem;
+}
+
+.no-opt-subtext,
+.no-sugg-subtext {
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 0.95rem;
+}
+
+.fidelity-display {
+  display: flex;
+  justify-content: center;
+  margin: 2rem 0;
+}
+
+.fidelity-gauge {
+  background: linear-gradient(135deg, rgba(102, 126, 234, 0.2), rgba(118, 75, 162, 0.2));
+  border: 2px solid rgba(79, 172, 254, 0.4);
+  border-radius: 50%;
+  width: 200px;
+  height: 200px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 8px 24px rgba(102, 126, 234, 0.3);
+}
+
+.gauge-value {
+  font-size: 3rem;
+  font-weight: 700;
+  color: var(--quantum-electric);
+}
+
+.gauge-label {
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 0.9rem;
+  margin-top: 0.5rem;
+}
+
+.fidelity-info {
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 12px;
+  padding: 1.5rem;
+}
+
+.info-text {
+  color: rgba(255, 255, 255, 0.8);
+  line-height: 1.6;
+  margin-bottom: 1.5rem;
+}
+
+.fidelity-factors ul {
+  list-style: none;
+  padding: 0;
+  margin: 1rem 0 0 0;
+}
+
+.fidelity-factors li {
+  color: rgba(255, 255, 255, 0.9);
+  padding: 0.75rem;
+  margin-bottom: 0.5rem;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 8px;
+}
+
+.factor-impact {
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 0.9rem;
+  margin-left: 0.5rem;
+}
+
+.fidelity-rating {
+  margin-top: 1.5rem;
+  padding: 1rem;
+  border-radius: 8px;
+  text-align: center;
+  font-weight: 600;
+}
+
+.fidelity-rating.excellent {
+  background: rgba(0, 255, 136, 0.2);
+  border: 1px solid rgba(0, 255, 136, 0.4);
+  color: #00ff88;
+}
+
+.fidelity-rating.good {
+  background: rgba(102, 204, 255, 0.2);
+  border: 1px solid rgba(102, 204, 255, 0.4);
+  color: #66ccff;
+}
+
+.fidelity-rating.fair {
+  background: rgba(255, 204, 0, 0.2);
+  border: 1px solid rgba(255, 204, 0, 0.4);
+  color: #ffcc00;
+}
+
+.fidelity-rating.poor {
+  background: rgba(255, 100, 100, 0.2);
+  border: 1px solid rgba(255, 100, 100, 0.4);
+  color: #ff6464;
+}
+
+.suggestions-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.suggestion-card {
+  display: flex;
+  gap: 1rem;
+  padding: 1.5rem;
+  border-radius: 12px;
+  border-left: 4px solid;
+}
+
+.suggestion-card.success {
+  background: rgba(0, 255, 136, 0.1);
+  border-left-color: #00ff88;
+}
+
+.suggestion-card.warning {
+  background: rgba(255, 204, 0, 0.1);
+  border-left-color: #ffcc00;
+}
+
+.suggestion-card.info {
+  background: rgba(102, 204, 255, 0.1);
+  border-left-color: #66ccff;
+}
+
+.suggestion-icon {
+  font-size: 1.5rem;
+}
+
+.suggestion-content {
+  flex: 1;
+}
+
+.suggestion-message {
+  color: rgba(255, 255, 255, 0.9);
+  margin: 0 0 0.75rem 0;
+  line-height: 1.5;
+}
+
+.btn-suggestion {
+  padding: 0.5rem 1rem;
+  background: rgba(102, 126, 234, 0.3);
+  border: 1px solid rgba(79, 172, 254, 0.4);
+  border-radius: 8px;
+  color: white;
+  cursor: pointer;
+  font-size: 0.9rem;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+.btn-suggestion:hover {
+  background: rgba(102, 126, 234, 0.4);
+  transform: translateY(-1px);
+}
+
+.tips-section {
+  background: rgba(102, 126, 234, 0.1);
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin-top: 2rem;
+}
+
+.tips-list {
+  list-style: none;
+  padding: 0;
+  margin: 1rem 0 0 0;
+}
+
+.tips-list li {
+  color: rgba(255, 255, 255, 0.8);
+  padding: 0.5rem 0 0.5rem 1.5rem;
+  position: relative;
+}
+
+.tips-list li::before {
+  content: '▸';
+  position: absolute;
+  left: 0;
+  color: var(--quantum-electric);
+}
+
+@media (max-width: 768px) {
+  .analyzer-modal {
+    width: 95%;
+    max-height: 95vh;
+  }
+
+  .analyzer-header,
+  .analyzer-content {
+    padding: 1.5rem;
+  }
+
+  .analyzer-tabs {
+    padding: 1rem 1.5rem 0;
+    overflow-x: auto;
+  }
+
+  .stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .distribution-item {
+    grid-template-columns: 60px 1fr 30px;
+  }
+}
