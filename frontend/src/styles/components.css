@@ -208,6 +208,41 @@ button:disabled {
   100% { left: 200%; }
 }
 
+.palette-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  position: relative;
+  z-index: 1;
+}
+
+.palette-header h3 {
+  color: white;
+  font-size: 1.3rem;
+  text-shadow: 0 2px 10px rgba(102, 126, 234, 0.5);
+  margin: 0;
+}
+
+.toggle-advanced {
+  padding: 0.5rem 1rem;
+  background: linear-gradient(135deg, rgba(102, 126, 234, 0.3) 0%, rgba(118, 75, 162, 0.3) 100%);
+  border: 1px solid var(--quantum-border);
+  color: white;
+  font-weight: 600;
+  font-size: 0.9rem;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.toggle-advanced:hover {
+  background: linear-gradient(135deg, rgba(102, 126, 234, 0.5) 0%, rgba(118, 75, 162, 0.5) 100%);
+  border-color: var(--quantum-electric);
+  box-shadow: 0 0 20px rgba(102, 126, 234, 0.4);
+  transform: scale(1.05);
+}
+
 .gate-palette h3 {
   color: white;
   margin-bottom: 1.5rem;
@@ -215,11 +250,21 @@ button:disabled {
   text-shadow: 0 2px 10px rgba(102, 126, 234, 0.5);
 }
 
+.qubit-selectors {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+  position: relative;
+  z-index: 1;
+}
+
 .qubit-selector {
-  margin-bottom: 1.25rem;
   display: flex;
   align-items: center;
   gap: 0.75rem;
+  flex: 1;
+  min-width: 150px;
 }
 
 .qubit-selector label {
@@ -228,9 +273,11 @@ button:disabled {
   text-transform: uppercase;
   letter-spacing: 0.5px;
   font-size: 0.9rem;
+  white-space: nowrap;
 }
 
 .qubit-selector select {
+  flex: 1;
   padding: 0.75rem;
   background: rgba(102, 126, 234, 0.1);
   border: 1px solid var(--quantum-border);
@@ -253,6 +300,8 @@ button:disabled {
   display: flex;
   align-items: center;
   gap: 0.75rem;
+  position: relative;
+  z-index: 1;
 }
 
 .rotation-input label {
@@ -281,10 +330,92 @@ button:disabled {
   background: rgba(102, 126, 234, 0.15);
 }
 
+.rotation-input small {
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 0.85rem;
+  font-style: italic;
+}
+
+.gate-categories {
+  position: relative;
+  z-index: 1;
+}
+
+.gate-category {
+  margin-bottom: 1.5rem;
+}
+
+.gate-category:last-child {
+  margin-bottom: 0;
+}
+
+.gate-category h4 {
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 1rem;
+  margin-bottom: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-weight: 600;
+}
+
 .gates {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
   gap: 0.75rem;
+}
+
+.gate-btn {
+  min-width: 90px;
+  padding: 1rem;
+  border: 1px solid var(--quantum-border);
+  color: white;
+  font-weight: 700;
+  font-size: 1.1rem;
+  border-radius: 12px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  backdrop-filter: blur(10px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  cursor: pointer;
+}
+
+.gate-btn.basic {
+  background: linear-gradient(135deg, rgba(102, 126, 234, 0.2) 0%, rgba(118, 75, 162, 0.2) 100%);
+}
+
+.gate-btn.rotation {
+  background: linear-gradient(135deg, rgba(240, 147, 251, 0.2) 0%, rgba(245, 87, 108, 0.2) 100%);
+}
+
+.gate-btn.advanced {
+  background: linear-gradient(135deg, rgba(79, 172, 254, 0.2) 0%, rgba(0, 242, 254, 0.2) 100%);
+}
+
+.gate-btn:hover:not(:disabled) {
+  border-color: var(--quantum-electric);
+  transform: translateY(-3px) scale(1.05);
+  box-shadow: 0 8px 25px rgba(102, 126, 234, 0.5), 0 0 30px rgba(102, 126, 234, 0.3);
+}
+
+.gate-btn.basic:hover:not(:disabled) {
+  background: linear-gradient(135deg, rgba(102, 126, 234, 0.4) 0%, rgba(118, 75, 162, 0.4) 100%);
+}
+
+.gate-btn.rotation:hover:not(:disabled) {
+  background: linear-gradient(135deg, rgba(240, 147, 251, 0.4) 0%, rgba(245, 87, 108, 0.4) 100%);
+}
+
+.gate-btn.advanced:hover:not(:disabled) {
+  background: linear-gradient(135deg, rgba(79, 172, 254, 0.4) 0%, rgba(0, 242, 254, 0.4) 100%);
+}
+
+.gate-btn:active {
+  transform: translateY(-1px) scale(1.02);
+}
+
+.gate-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  background: rgba(100, 100, 100, 0.2);
 }
 
 .gates button {
