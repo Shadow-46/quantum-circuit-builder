@@ -13,6 +13,8 @@ import TutorialPanel from "../Learning/TutorialPanel";
 import GateTooltip from "../Learning/GateTooltip";
 import ExportMenu from "../Common/ExportMenu";
 import CircuitAnalyzer from "../Common/CircuitAnalyzer";
+import NoiseSimulator from "../Common/NoiseSimulator";
+import { NOISE_PRESETS, applyReadoutNoise, calculateFidelity } from "../../utils/noiseModels";
 import tutorials from "../../data/tutorials";
 
 export default function CircuitBuilder({ activeTutorial }) {
@@ -65,6 +67,13 @@ export default function CircuitBuilder({ activeTutorial }) {
   const [densityMatrix, setDensityMatrix] = useState(null);
   const [selectedQubit, setSelectedQubit] = useState(0);
   const [viewMode, setViewMode] = useState('measurements'); // 'measurements', 'statevector', 'bloch', 'density'
+  
+  // Noise simulation state
+  const [noiseEnabled, setNoiseEnabled] = useState(false);
+  const [noiseModel, setNoiseModel] = useState(NOISE_PRESETS.ideal);
+  const [idealResults, setIdealResults] = useState(null);
+  const [noisyResults, setNoisyResults] = useState(null);
+  const [fidelity, setFidelity] = useState(null);
   
   // Tutorial state
   const [tutorialMode, setTutorialMode] = useState(false);
@@ -128,12 +137,36 @@ export default function CircuitBuilder({ activeTutorial }) {
     try {
       setIsSimulating(true);
       setError(null);
+      
+      // Always run ideal simulation
       const res = await simulationAPI.simulate({
         num_qubits: numQubits,
         gates,
         shots: 1024,
       });
-      setResults(res.data);
+      
+      const idealData = res.data;
+      setIdealResults(idealData);
+      
+      // If noise is enabled, apply noise models
+      if (noiseEnabled && noiseModel) {
+        // Apply readout noise to measurement results
+        const noisyData = applyReadoutNoise(idealData, noiseModel);
+        setNoisyResults(noisyData);
+        
+        // Calculate fidelity between ideal and noisy results
+        const fidelityValue = calculateFidelity(idealData, noisyData);
+        setFidelity(fidelityValue);
+        
+        // Show noisy results
+        setResults(noisyData);
+      } else {
+        // Show ideal results when noise is disabled
+        setResults(idealData);
+        setNoisyResults(null);
+        setFidelity(null);
+      }
+      
       incrementSimulations();
       updateMaxQubits(numQubits);
     } catch (e) {
@@ -322,6 +355,13 @@ export default function CircuitBuilder({ activeTutorial }) {
       </div>
       
       <GatePalette onAdd={handleAddGate} numQubits={numQubits} />
+      
+      <NoiseSimulator 
+        onNoiseModelChange={setNoiseModel}
+        onToggleNoise={setNoiseEnabled}
+        noiseEnabled={noiseEnabled}
+      />
+      
       <CircuitCanvas gates={gates} numQubits={numQubits} onRemove={removeGate} />
       
       {error && (
@@ -379,7 +419,44 @@ export default function CircuitBuilder({ activeTutorial }) {
       <div className="results-section">
         <CircuitStats gates={gates} numQubits={numQubits} />
         
-        {viewMode === 'measurements' && <MeasurementChart results={results} />}
+        {/* Noise Comparison Display */}
+        {noiseEnabled && fidelity !== null && (
+          <div className="noise-comparison-panel">
+            <h3>Noise Simulation Results</h3>
+            <div className="fidelity-display">
+              <div className="fidelity-metric">
+                <span className="metric-label">Fidelity:</span>
+                <span className={`metric-value ${fidelity > 0.95 ? 'high' : fidelity > 0.8 ? 'medium' : 'low'}`}>
+                  {(fidelity * 100).toFixed(2)}%
+                </span>
+              </div>
+              <div className="fidelity-bar">
+                <div 
+                  className="fidelity-fill" 
+                  style={{ width: `${fidelity * 100}%` }}
+                ></div>
+              </div>
+            </div>
+            <p className="noise-description">
+              Showing results with {noiseModel.name || 'custom'} noise model. 
+              Fidelity measures how similar the noisy results are to ideal results.
+            </p>
+            {idealResults && (
+              <div className="results-comparison">
+                <div className="ideal-results">
+                  <h4>Ideal Results</h4>
+                  <MeasurementChart results={idealResults} />
+                </div>
+                <div className="noisy-results">
+                  <h4>Noisy Results (Displayed)</h4>
+                  <MeasurementChart results={noisyResults || results} />
+                </div>
+              </div>
+            )}
+          </div>
+        )}
+        
+        {viewMode === 'measurements' && !noiseEnabled && <MeasurementChart results={results} />}
         {viewMode === 'statevector' && <StatevectorView statevector={statevector} />}
         {viewMode === 'bloch' && <BlochSphere blochData={blochData} />}
         {viewMode === 'density' && <DensityMatrixView densityMatrix={densityMatrix} />}
