@@ -14,6 +14,7 @@ import GateTooltip from "../Learning/GateTooltip";
 import ExportMenu from "../Common/ExportMenu";
 import CircuitAnalyzer from "../Common/CircuitAnalyzer";
 import NoiseSimulator from "../Common/NoiseSimulator";
+import CircuitTranspiler from "../Common/CircuitTranspiler";
 import { NOISE_PRESETS, applyReadoutNoise, calculateFidelity } from "../../utils/noiseModels";
 import tutorials from "../../data/tutorials";
 
@@ -74,6 +75,9 @@ export default function CircuitBuilder({ activeTutorial }) {
   const [idealResults, setIdealResults] = useState(null);
   const [noisyResults, setNoisyResults] = useState(null);
   const [fidelity, setFidelity] = useState(null);
+  
+  // Transpiler state
+  const [transpiledGates, setTranspiledGates] = useState(null);
   
   // Tutorial state
   const [tutorialMode, setTutorialMode] = useState(false);
@@ -360,6 +364,11 @@ export default function CircuitBuilder({ activeTutorial }) {
         onNoiseModelChange={setNoiseModel}
         onToggleNoise={setNoiseEnabled}
         noiseEnabled={noiseEnabled}
+      />
+      
+      <CircuitTranspiler 
+        gates={gates}
+        onTranspile={setTranspiledGates}
       />
       
       <CircuitCanvas gates={gates} numQubits={numQubits} onRemove={removeGate} />
