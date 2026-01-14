@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback, useMemo } from "react";
 import { useCircuitStore } from "../../store/circuitStore";
 import useProgressStore from "../../store/progressStore";
 import { simulationAPI, circuitAPI, exportAPI, algorithmAPI } from "../../services/api";
@@ -133,11 +133,11 @@ export default function CircuitBuilder({ activeTutorial }) {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [undo, redo, canUndo, canRedo]);
 
-  const handleAddGate = (gate) => {
+  const handleAddGate = useCallback((gate) => {
     addGate(gate);
-  };
+  }, [addGate]);
 
-  const handleSimulate = async () => {
+  const handleSimulate = useCallback(async () => {
     try {
       setIsSimulating(true);
       setError(null);
@@ -180,9 +180,9 @@ export default function CircuitBuilder({ activeTutorial }) {
     } finally {
       setIsSimulating(false);
     }
-  };
+  }, [gates, numQubits, noiseEnabled, noiseModel, setResults, setIsSimulating, setError, incrementSimulations, updateMaxQubits]);
 
-  const handleSave = async () => {
+  const handleSave = useCallback(async () => {
     if (!circuitName.trim()) {
       setError("Circuit name is required");
       return;

@@ -1,4 +1,6 @@
-export default function MeasurementChart({ results }) {
+import { memo, useMemo } from 'react';
+
+export default memo(function MeasurementChart({ results }) {
   if (!results) {
     return (
       <div className="measurement-chart">
@@ -37,4 +39,6 @@ export default function MeasurementChart({ results }) {
       </div>
     </div>
   );
-}
+}, (prevProps, nextProps) => {
+  return prevProps.results === nextProps.results;
+});

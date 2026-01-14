@@ -1,5 +1,7 @@
-export default function CircuitCanvas({ gates, numQubits, onRemove }) {
-  const getGateColor = (type) => {
+import { memo, useMemo } from 'react';
+
+export default memo(function CircuitCanvas({ gates, numQubits, onRemove }) {
+  const getGateColor = useMemo(() => (type) => {
     const colors = {
       'H': '#667eea',
       'X': '#f093fb',
@@ -23,6 +25,7 @@ export default function CircuitCanvas({ gates, numQubits, onRemove }) {
       'CRZ': '#43e97b',
     };
     return colors[type] || '#667eea';
+  }, []);
   };
 
   const renderGate = (g, idx, xOffset) => {
@@ -200,4 +203,11 @@ export default function CircuitCanvas({ gates, numQubits, onRemove }) {
       </ul>
     </div>
   );
-}
+}, (prevProps, nextProps) => {
+  // Custom comparison function for better memoization
+  return (
+    prevProps.numQubits === nextProps.numQubits &&
+    prevProps.gates.length === nextProps.gates.length &&
+    prevProps.gates.every((gate, idx) => gate === nextProps.gates[idx])
+  );
+});

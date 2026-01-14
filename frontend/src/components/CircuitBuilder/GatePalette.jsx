@@ -1,7 +1,7 @@
-import { useState } from "react";
+import { useState, memo, useMemo, useCallback } from "react";
 import useProgressStore from "../../store/progressStore";
 
-export default function GatePalette({ onAdd, numQubits }) {
+export default memo(function GatePalette({ onAdd, numQubits }) {
   const [selectedQubit, setSelectedQubit] = useState(0);
   const [selectedQubit2, setSelectedQubit2] = useState(1);
   const [selectedQubit3, setSelectedQubit3] = useState(2);
@@ -38,9 +38,9 @@ export default function GatePalette({ onAdd, numQubits }) {
     { type: "CRZ", desc: "Controlled Rotation-Z", numQubits: 2, hasParam: true, category: "advanced" },
   ];
 
-  const ALL_GATES = [...BASIC_GATES, ...ROTATION_GATES, ...ADVANCED_GATES];
+  const ALL_GATES = useMemo(() => [...BASIC_GATES, ...ROTATION_GATES, ...ADVANCED_GATES], []);
 
-  const handleAddGate = (gate) => {
+  const handleAddGate = useCallback((gate) => {
     const params = gate.hasParam ? [rotationAngle] : [];
     
     if (gate.numQubits === 1) {
@@ -61,7 +61,7 @@ export default function GatePalette({ onAdd, numQubits }) {
     
     // Track gate usage
     incrementGatesUsed(gate.type);
-  };
+  }, [selectedQubit, selectedQubit2, selectedQubit3, rotationAngle, numQubits, onAdd, incrementGatesUsed]);
 
   return (
     <div className="gate-palette">
@@ -177,4 +177,6 @@ export default function GatePalette({ onAdd, numQubits }) {
       </div>
     </div>
   );
-}
+}, (prevProps, nextProps) => {
+  return prevProps.numQubits === nextProps.numQubits;
+});
