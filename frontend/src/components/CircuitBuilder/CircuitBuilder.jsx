@@ -15,7 +15,9 @@ import ExportMenu from "../Common/ExportMenu";
 import CircuitAnalyzer from "../Common/CircuitAnalyzer";
 import NoiseSimulator from "../Common/NoiseSimulator";
 import CircuitTranspiler from "../Common/CircuitTranspiler";
+import CircuitLibrary from "../Common/CircuitLibrary";
 import { NOISE_PRESETS, applyReadoutNoise, calculateFidelity } from "../../utils/noiseModels";
+import { addToRecent } from "../../utils/libraryManager";
 import tutorials from "../../data/tutorials";
 
 export default function CircuitBuilder({ activeTutorial }) {
@@ -57,6 +59,7 @@ export default function CircuitBuilder({ activeTutorial }) {
   const [showExportModal, setShowExportModal] = useState(false);
   const [showExportMenu, setShowExportMenu] = useState(false);
   const [showAnalyzer, setShowAnalyzer] = useState(false);
+  const [showLibrary, setShowLibrary] = useState(false);
   const [circuitName, setCircuitName] = useState("");
   const [circuitDescription, setCircuitDescription] = useState("");
   const [savedCircuits, setSavedCircuits] = useState([]);
@@ -229,6 +232,30 @@ export default function CircuitBuilder({ activeTutorial }) {
     setShowLoadModal(false);
     setError(null);
   };
+  
+  // Handle loading template from library
+  const handleLoadFromLibrary = useCallback((template) => {
+    // Clear current circuit
+    clear();
+    
+    // Set qubits
+    setNumQubits(template.numQubits);
+    
+    // Add all gates from template
+    template.gates.forEach(gate => {
+      addGate(gate);
+    });
+    
+    // Track in recent circuits
+    addToRecent(template.id);
+    
+    // Track usage
+    incrementTemplatesUsed();
+    incrementCircuitsCreated();
+    updateMaxQubits(template.numQubits);
+    
+    setError(null);
+  }, [clear, setNumQubits, addGate, incrementTemplatesUsed, incrementCircuitsCreated, updateMaxQubits, setError]);
 
   const handleExport = async () => {
     try {
@@ -330,10 +357,15 @@ export default function CircuitBuilder({ activeTutorial }) {
           </button>
           <button onClick={handleSimulate} disabled={!gates.length || isSimulating} className="btn-primary">
             {isSimulating ? "Simulating..." : "🔬 Simulate"}
-          </button>          <button onClick={() => setShowAnalyzer(true)} disabled={!gates.length} className="btn-secondary">
+          </button>
+          <button onClick={() => setShowLibrary(true)} className="btn-secondary">
+            📚 Circuit Library
+          </button>
+          <button onClick={() => setShowAnalyzer(true)} disabled={!gates.length} className="btn-secondary">
             🔬 Analyze & Optimize
-          </button>          <button onClick={handleExport} disabled={!gates.length} className="btn-secondary">
-            � Export Code
+          </button>
+          <button onClick={handleExport} disabled={!gates.length} className="btn-secondary">
+            ⬇ Export Code
           </button>
           <button onClick={() => setShowExportMenu(true)} disabled={!gates.length} className="btn-secondary">
             📤 Export & Share
@@ -636,6 +668,15 @@ export default function CircuitBuilder({ activeTutorial }) {
             });
           }}
           onClose={() => setShowAnalyzer(false)}
+        />
+      )}
+
+      {/* Circuit Library */}
+      {showLibrary && (
+        <CircuitLibrary
+          onLoadCircuit={handleLoadFromLibrary}
+          currentCircuit={{ numQubits, gates }}
+          onClose={() => setShowLibrary(false)}
         />
       )}
     </div>
