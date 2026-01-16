@@ -16,6 +16,7 @@ import CircuitAnalyzer from "../Common/CircuitAnalyzer";
 import NoiseSimulator from "../Common/NoiseSimulator";
 import CircuitTranspiler from "../Common/CircuitTranspiler";
 import CircuitLibrary from "../Common/CircuitLibrary";
+import CircuitComparison from "../Common/CircuitComparison";
 import { NOISE_PRESETS, applyReadoutNoise, calculateFidelity } from "../../utils/noiseModels";
 import { addToRecent } from "../../utils/libraryManager";
 import tutorials from "../../data/tutorials";
@@ -60,6 +61,7 @@ export default function CircuitBuilder({ activeTutorial }) {
   const [showExportMenu, setShowExportMenu] = useState(false);
   const [showAnalyzer, setShowAnalyzer] = useState(false);
   const [showLibrary, setShowLibrary] = useState(false);
+  const [showComparison, setShowComparison] = useState(false);
   const [circuitName, setCircuitName] = useState("");
   const [circuitDescription, setCircuitDescription] = useState("");
   const [savedCircuits, setSavedCircuits] = useState([]);
@@ -360,6 +362,9 @@ export default function CircuitBuilder({ activeTutorial }) {
           </button>
           <button onClick={() => setShowLibrary(true)} className="btn-secondary">
             📚 Circuit Library
+          </button>
+          <button onClick={() => setShowComparison(true)} disabled={!gates.length} className="btn-secondary">
+            ⚖️ Compare Circuits
           </button>
           <button onClick={() => setShowAnalyzer(true)} disabled={!gates.length} className="btn-secondary">
             🔬 Analyze & Optimize
@@ -677,6 +682,14 @@ export default function CircuitBuilder({ activeTutorial }) {
           onLoadCircuit={handleLoadFromLibrary}
           currentCircuit={{ numQubits, gates }}
           onClose={() => setShowLibrary(false)}
+        />
+      )}
+
+      {/* Circuit Comparison */}
+      {showComparison && (
+        <CircuitComparison
+          currentCircuit={{ numQubits, gates }}
+          onClose={() => setShowComparison(false)}
         />
       )}
     </div>
