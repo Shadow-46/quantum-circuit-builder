@@ -17,6 +17,7 @@ import NoiseSimulator from "../Common/NoiseSimulator";
 import CircuitTranspiler from "../Common/CircuitTranspiler";
 import CircuitLibrary from "../Common/CircuitLibrary";
 import CircuitComparison from "../Common/CircuitComparison";
+import ExportModal from "../Common/ExportModal";
 import { NOISE_PRESETS, applyReadoutNoise, calculateFidelity } from "../../utils/noiseModels";
 import { addToRecent } from "../../utils/libraryManager";
 import tutorials from "../../data/tutorials";
@@ -62,6 +63,7 @@ export default function CircuitBuilder({ activeTutorial }) {
   const [showAnalyzer, setShowAnalyzer] = useState(false);
   const [showLibrary, setShowLibrary] = useState(false);
   const [showComparison, setShowComparison] = useState(false);
+  const [showAdvancedExport, setShowAdvancedExport] = useState(false);
   const [circuitName, setCircuitName] = useState("");
   const [circuitDescription, setCircuitDescription] = useState("");
   const [savedCircuits, setSavedCircuits] = useState([]);
@@ -365,6 +367,9 @@ export default function CircuitBuilder({ activeTutorial }) {
           </button>
           <button onClick={() => setShowComparison(true)} disabled={!gates.length} className="btn-secondary">
             ⚖️ Compare Circuits
+          </button>
+          <button onClick={() => setShowAdvancedExport(true)} disabled={!gates.length} className="btn-secondary">
+            📥 Advanced Export
           </button>
           <button onClick={() => setShowAnalyzer(true)} disabled={!gates.length} className="btn-secondary">
             🔬 Analyze & Optimize
@@ -690,6 +695,14 @@ export default function CircuitBuilder({ activeTutorial }) {
         <CircuitComparison
           currentCircuit={{ numQubits, gates }}
           onClose={() => setShowComparison(false)}
+        />
+      )}
+
+      {/* Advanced Export Modal */}
+      {showAdvancedExport && (
+        <ExportModal
+          circuit={{ numQubits, gates, name: circuitName, description: circuitDescription }}
+          onClose={() => setShowAdvancedExport(false)}
         />
       )}
     </div>
