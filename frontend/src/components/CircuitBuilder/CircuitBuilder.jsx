@@ -17,6 +17,7 @@ import NoiseSimulator from "../Common/NoiseSimulator";
 import CircuitTranspiler from "../Common/CircuitTranspiler";
 import CircuitLibrary from "../Common/CircuitLibrary";
 import CircuitComparison from "../Common/CircuitComparison";
+import CircuitHistory from "../Common/CircuitHistory";
 import ExportModal from "../Common/ExportModal";
 import { NOISE_PRESETS, applyReadoutNoise, calculateFidelity } from "../../utils/noiseModels";
 import { addToRecent } from "../../utils/libraryManager";
@@ -41,6 +42,9 @@ export default function CircuitBuilder({ activeTutorial }) {
     redo,
     canUndo,
     canRedo,
+    history,
+    historyIndex,
+    restoreHistory,
   } = useCircuitStore();
 
   // Progress tracking
@@ -61,6 +65,7 @@ export default function CircuitBuilder({ activeTutorial }) {
   const [showExportModal, setShowExportModal] = useState(false);
   const [showExportMenu, setShowExportMenu] = useState(false);
   const [showAnalyzer, setShowAnalyzer] = useState(false);
+  const [showHistory, setShowHistory] = useState(false);
   const [showLibrary, setShowLibrary] = useState(false);
   const [showComparison, setShowComparison] = useState(false);
   const [showAdvancedExport, setShowAdvancedExport] = useState(false);
@@ -370,6 +375,9 @@ export default function CircuitBuilder({ activeTutorial }) {
           </button>
           <button onClick={() => setShowAdvancedExport(true)} disabled={!gates.length} className="btn-secondary">
             📥 Advanced Export
+          </button>
+          <button onClick={() => setShowHistory(true)} disabled={history.length === 0} className="btn-secondary">
+            ⏱️ History ({history.length})
           </button>
           <button onClick={() => setShowAnalyzer(true)} disabled={!gates.length} className="btn-secondary">
             🔬 Analyze & Optimize
@@ -703,6 +711,19 @@ export default function CircuitBuilder({ activeTutorial }) {
         <ExportModal
           circuit={{ numQubits, gates, name: circuitName, description: circuitDescription }}
           onClose={() => setShowAdvancedExport(false)}
+        />
+      )}
+
+      {/* Circuit History */}
+      {showHistory && (
+        <CircuitHistory
+          history={history}
+          currentIndex={historyIndex}
+          onRestore={(index) => {
+            restoreHistory(index);
+            setShowHistory(false);
+          }}
+          onClose={() => setShowHistory(false)}
         />
       )}
     </div>

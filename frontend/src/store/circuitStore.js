@@ -12,7 +12,11 @@ export const useCircuitStore = create((set, get) => ({
   _pushHistory: () => {
     const { gates, numQubits, history, historyIndex } = get();
     const newHistory = history.slice(0, historyIndex + 1);
-    newHistory.push({ gates: [...gates], numQubits });
+    newHistory.push({ 
+      gates: [...gates], 
+      numQubits,
+      timestamp: new Date().toISOString()
+    });
     set({ history: newHistory, historyIndex: newHistory.length - 1 });
   },
 
@@ -73,4 +77,18 @@ export const useCircuitStore = create((set, get) => ({
 
   canUndo: () => get().historyIndex > 0,
   canRedo: () => get().historyIndex < get().history.length - 1,
+
+  // Restore to specific history state
+  restoreHistory: (index) => {
+    const { history } = get();
+    if (index >= 0 && index < history.length) {
+      const targetState = history[index];
+      set({
+        gates: [...targetState.gates],
+        numQubits: targetState.numQubits,
+        historyIndex: index,
+        results: null,
+      });
+    }
+  },
 }));
