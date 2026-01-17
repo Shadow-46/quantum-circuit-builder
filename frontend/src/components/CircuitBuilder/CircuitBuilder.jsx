@@ -18,6 +18,7 @@ import CircuitTranspiler from "../Common/CircuitTranspiler";
 import CircuitLibrary from "../Common/CircuitLibrary";
 import CircuitComparison from "../Common/CircuitComparison";
 import CircuitHistory from "../Common/CircuitHistory";
+import HardwareIntegration from "../Common/HardwareIntegration";
 import ExportModal from "../Common/ExportModal";
 import { NOISE_PRESETS, applyReadoutNoise, calculateFidelity } from "../../utils/noiseModels";
 import { addToRecent } from "../../utils/libraryManager";
@@ -69,6 +70,7 @@ export default function CircuitBuilder({ activeTutorial }) {
   const [showLibrary, setShowLibrary] = useState(false);
   const [showComparison, setShowComparison] = useState(false);
   const [showAdvancedExport, setShowAdvancedExport] = useState(false);
+  const [showHardware, setShowHardware] = useState(false);
   const [circuitName, setCircuitName] = useState("");
   const [circuitDescription, setCircuitDescription] = useState("");
   const [savedCircuits, setSavedCircuits] = useState([]);
@@ -375,6 +377,9 @@ export default function CircuitBuilder({ activeTutorial }) {
           </button>
           <button onClick={() => setShowAdvancedExport(true)} disabled={!gates.length} className="btn-secondary">
             📥 Advanced Export
+          </button>
+          <button onClick={() => setShowHardware(true)} disabled={!gates.length} className="btn-secondary">
+            🌐 Run on Hardware
           </button>
           <button onClick={() => setShowHistory(true)} disabled={history.length === 0} className="btn-secondary">
             ⏱️ History ({history.length})
@@ -724,6 +729,14 @@ export default function CircuitBuilder({ activeTutorial }) {
             setShowHistory(false);
           }}
           onClose={() => setShowHistory(false)}
+        />
+      )}
+
+      {/* Hardware Integration */}
+      {showHardware && (
+        <HardwareIntegration
+          circuit={{ numQubits, gates, name: circuitName }}
+          onClose={() => setShowHardware(false)}
         />
       )}
     </div>
