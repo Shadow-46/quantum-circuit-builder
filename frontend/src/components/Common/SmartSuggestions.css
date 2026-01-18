@@ -1,0 +1,231 @@
+/* Smart Suggestions Panel */
+.smart-suggestions-panel {
+  position: absolute;
+  width: 380px;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15), 0 0 0 1px rgba(0, 0, 0, 0.05);
+  z-index: 1000;
+  animation: suggestionsSlide 0.2s ease-out;
+  overflow: hidden;
+}
+
+@keyframes suggestionsSlide {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Header */
+.suggestions-header {
+  padding: 12px 16px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.suggestions-icon {
+  font-size: 18px;
+  animation: sparkle 2s infinite;
+}
+
+@keyframes sparkle {
+  0%, 100% {
+    transform: scale(1) rotate(0deg);
+  }
+  25% {
+    transform: scale(1.2) rotate(-10deg);
+  }
+  50% {
+    transform: scale(1) rotate(0deg);
+  }
+  75% {
+    transform: scale(1.2) rotate(10deg);
+  }
+}
+
+.suggestions-title {
+  font-size: 14px;
+  font-weight: 600;
+  flex: 1;
+}
+
+.suggestions-badge {
+  background: rgba(255, 255, 255, 0.2);
+  padding: 2px 8px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+/* Suggestions List */
+.suggestions-list {
+  max-height: 400px;
+  overflow-y: auto;
+  padding: 8px;
+}
+
+.suggestions-list::-webkit-scrollbar {
+  width: 6px;
+}
+
+.suggestions-list::-webkit-scrollbar-track {
+  background: #f3f4f6;
+}
+
+.suggestions-list::-webkit-scrollbar-thumb {
+  background: #d1d5db;
+  border-radius: 3px;
+}
+
+/* Suggestion Item */
+.suggestion-item {
+  padding: 12px;
+  margin-bottom: 8px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s;
+  border: 2px solid transparent;
+  background: #f9fafb;
+}
+
+.suggestion-item:hover {
+  background: white;
+  border-color: #667eea;
+  transform: translateX(4px);
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.15);
+}
+
+.suggestion-item:last-child {
+  margin-bottom: 0;
+}
+
+.suggestion-item.priority-high {
+  background: linear-gradient(135deg, rgba(239, 68, 68, 0.05) 0%, rgba(220, 38, 38, 0.05) 100%);
+  border-left: 3px solid #ef4444;
+}
+
+.suggestion-item.priority-high:hover {
+  background: linear-gradient(135deg, rgba(239, 68, 68, 0.1) 0%, rgba(220, 38, 38, 0.1) 100%);
+  border-color: #ef4444;
+}
+
+.suggestion-item.priority-medium {
+  border-left: 3px solid #f59e0b;
+}
+
+/* Suggestion Header */
+.suggestion-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 6px;
+}
+
+.suggestion-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: #1f2937;
+}
+
+.priority-badge {
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.priority-badge.high {
+  background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+  color: white;
+}
+
+.priority-badge.medium {
+  background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+  color: white;
+}
+
+/* Suggestion Description */
+.suggestion-description {
+  font-size: 13px;
+  color: #6b7280;
+  line-height: 1.5;
+  margin: 0 0 8px 0;
+}
+
+/* Suggestion Action */
+.suggestion-action {
+  margin-top: 8px;
+  padding: 8px;
+  background: rgba(102, 126, 234, 0.05);
+  border-radius: 6px;
+  border-left: 2px solid #667eea;
+}
+
+.action-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: #667eea;
+  display: block;
+  margin-bottom: 6px;
+}
+
+.action-gates {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.gate-chip {
+  padding: 3px 8px;
+  background: white;
+  border: 1px solid #667eea;
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: 600;
+  color: #667eea;
+  font-family: 'Courier New', monospace;
+}
+
+/* Suggestion Reason */
+.suggestion-reason {
+  margin-top: 8px;
+  padding: 6px 8px;
+  background: rgba(16, 185, 129, 0.05);
+  border-radius: 6px;
+  font-size: 12px;
+  color: #059669;
+  border-left: 2px solid #10b981;
+}
+
+/* Footer */
+.suggestions-footer {
+  padding: 10px 16px;
+  background: #f9fafb;
+  border-top: 1px solid #e5e7eb;
+  text-align: center;
+}
+
+.footer-tip {
+  font-size: 11px;
+  color: #9ca3af;
+  font-style: italic;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .smart-suggestions-panel {
+    width: 90vw;
+    max-width: 380px;
+  }
+}

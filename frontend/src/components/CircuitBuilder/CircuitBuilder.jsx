@@ -20,8 +20,11 @@ import CircuitComparison from "../Common/CircuitComparison";
 import CircuitHistory from "../Common/CircuitHistory";
 import HardwareIntegration from "../Common/HardwareIntegration";
 import ExportModal from "../Common/ExportModal";
+import AIAssistant from "../Common/AIAssistant";
+import SmartSuggestions from "../Common/SmartSuggestions";
 import { NOISE_PRESETS, applyReadoutNoise, calculateFidelity } from "../../utils/noiseModels";
 import { addToRecent } from "../../utils/libraryManager";
+import { getSmartSuggestions } from "../../utils/aiNLPProcessor";
 import tutorials from "../../data/tutorials";
 
 export default function CircuitBuilder({ activeTutorial }) {
@@ -98,6 +101,12 @@ export default function CircuitBuilder({ activeTutorial }) {
   const [currentTutorial, setCurrentTutorial] = useState(null);
   const [currentStep, setCurrentStep] = useState(0);
   const [hoveredGate, setHoveredGate] = useState(null);
+  
+  // AI Assistant state
+  const [showAIAssistant, setShowAIAssistant] = useState(false);
+  const [showSmartSuggestions, setShowSmartSuggestions] = useState(false);
+  const [smartSuggestions, setSmartSuggestions] = useState([]);
+  const [suggestionsPosition, setSuggestionsPosition] = useState({ x: 0, y: 0 });
 
   // Initialize tutorial if activeTutorial is provided
   useEffect(() => {
@@ -349,6 +358,33 @@ export default function CircuitBuilder({ activeTutorial }) {
     }
   };
 
+  // AI Assistant handlers
+  const handleApplyCircuitFromAI = useCallback((newGates) => {
+    // Clear existing circuit and add new gates
+    clear();
+    newGates.forEach(gate => addGate(gate));
+  }, [clear, addGate]);
+
+  const updateSmartSuggestions = useCallback(() => {
+    const suggestions = getSmartSuggestions(gates, numQubits);
+    setSmartSuggestions(suggestions);
+    if (suggestions.length > 0 && !showAIAssistant) {
+      setShowSmartSuggestions(true);
+    }
+  }, [gates, numQubits, showAIAssistant]);
+
+  // Update smart suggestions when circuit changes
+  useEffect(() => {
+    updateSmartSuggestions();
+  }, [gates, numQubits]);
+
+  const handleSelectSuggestion = useCallback((suggestion) => {
+    if (suggestion.action && suggestion.action.gates) {
+      suggestion.action.gates.forEach(gate => addGate(gate));
+    }
+    setShowSmartSuggestions(false);
+  }, [addGate]);
+
   return (
     <div className="circuit-builder">
       <div className="circuit-controls">
@@ -383,6 +419,9 @@ export default function CircuitBuilder({ activeTutorial }) {
           </button>
           <button onClick={() => setShowHistory(true)} disabled={history.length === 0} className="btn-secondary">
             ⏱️ History ({history.length})
+          </button>
+          <button onClick={() => setShowAIAssistant(true)} className="btn-primary">
+            🤖 AI Assistant
           </button>
           <button onClick={() => setShowAnalyzer(true)} disabled={!gates.length} className="btn-secondary">
             🔬 Analyze & Optimize
@@ -737,6 +776,24 @@ export default function CircuitBuilder({ activeTutorial }) {
         <HardwareIntegration
           circuit={{ numQubits, gates, name: circuitName }}
           onClose={() => setShowHardware(false)}
+        />
+      )}
+
+      {/* AI Assistant */}
+      {showAIAssistant && (
+        <AIAssistant
+          circuit={{ numQubits, gates }}
+          onApplyCircuit={handleApplyCircuitFromAI}
+          onClose={() => setShowAIAssistant(false)}
+        />
+      )}
+
+      {/* Smart Suggestions */}
+      {showSmartSuggestions && smartSuggestions.length > 0 && !showAIAssistant && (
+        <SmartSuggestions
+          suggestions={smartSuggestions}
+          onSelectSuggestion={handleSelectSuggestion}
+          position={suggestionsPosition}
         />
       )}
     </div>
