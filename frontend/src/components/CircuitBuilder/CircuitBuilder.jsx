@@ -22,6 +22,7 @@ import HardwareIntegration from "../Common/HardwareIntegration";
 import ExportModal from "../Common/ExportModal";
 import AIAssistant from "../Common/AIAssistant";
 import SmartSuggestions from "../Common/SmartSuggestions";
+import OptimizationDashboard from "../Common/OptimizationDashboard";
 import { NOISE_PRESETS, applyReadoutNoise, calculateFidelity } from "../../utils/noiseModels";
 import { addToRecent } from "../../utils/libraryManager";
 import { getSmartSuggestions } from "../../utils/aiNLPProcessor";
@@ -72,6 +73,7 @@ export default function CircuitBuilder({ activeTutorial }) {
   const [showHistory, setShowHistory] = useState(false);
   const [showLibrary, setShowLibrary] = useState(false);
   const [showComparison, setShowComparison] = useState(false);
+  const [showOptimization, setShowOptimization] = useState(false);
   const [showAdvancedExport, setShowAdvancedExport] = useState(false);
   const [showHardware, setShowHardware] = useState(false);
   const [circuitName, setCircuitName] = useState("");
@@ -422,6 +424,9 @@ export default function CircuitBuilder({ activeTutorial }) {
           </button>
           <button onClick={() => setShowAIAssistant(true)} className="btn-primary">
             🤖 AI Assistant
+          </button>
+          <button onClick={() => setShowOptimization(true)} disabled={!gates.length} className="btn-primary">
+            ⚡ Advanced Optimization
           </button>
           <button onClick={() => setShowAnalyzer(true)} disabled={!gates.length} className="btn-secondary">
             🔬 Analyze & Optimize
@@ -794,6 +799,21 @@ export default function CircuitBuilder({ activeTutorial }) {
           suggestions={smartSuggestions}
           onSelectSuggestion={handleSelectSuggestion}
           position={suggestionsPosition}
+        />
+      )}
+
+      {/* Advanced Optimization Dashboard */}
+      {showOptimization && (
+        <OptimizationDashboard
+          gates={gates}
+          numQubits={numQubits}
+          onApplyOptimization={(optimizedGates) => {
+            loadCircuit({
+              numQubits: numQubits,
+              gates: optimizedGates
+            });
+          }}
+          onClose={() => setShowOptimization(false)}
         />
       )}
     </div>
