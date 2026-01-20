@@ -1,0 +1,503 @@
+/* Version Control Overlay */
+.version-control-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1200;
+  animation: fadeIn 0.2s ease-out;
+}
+
+.version-control-content {
+  width: 90%;
+  max-width: 900px;
+  max-height: 90vh;
+  background: white;
+  border-radius: 16px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  overflow-y: auto;
+  animation: slideUp 0.3s ease-out;
+}
+
+/* Header */
+.version-header {
+  padding: 24px 30px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-radius: 16px 16px 0 0;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.version-header h2 {
+  margin: 0;
+  font-size: 24px;
+  font-weight: 600;
+}
+
+.close-button {
+  background: rgba(255, 255, 255, 0.2);
+  border: none;
+  color: white;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  font-size: 20px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.close-button:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+/* Create Version Section */
+.create-version-section {
+  padding: 24px 30px;
+  border-bottom: 2px solid #e5e7eb;
+  background: linear-gradient(135deg, rgba(102, 126, 234, 0.03) 0%, rgba(118, 75, 162, 0.03) 100%);
+}
+
+.create-version-section h3 {
+  margin: 0 0 16px 0;
+  font-size: 18px;
+  color: #1f2937;
+  font-weight: 600;
+}
+
+.commit-form {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.commit-input {
+  flex: 1;
+  padding: 14px 18px;
+  border: 2px solid #e5e7eb;
+  border-radius: 10px;
+  font-size: 14px;
+  color: #1f2937;
+  transition: border-color 0.2s;
+}
+
+.commit-input:focus {
+  outline: none;
+  border-color: #667eea;
+}
+
+.commit-input::placeholder {
+  color: #9ca3af;
+}
+
+.commit-button {
+  padding: 14px 28px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border: none;
+  color: white;
+  border-radius: 10px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+  white-space: nowrap;
+}
+
+.commit-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+}
+
+.current-circuit-info {
+  font-size: 13px;
+  color: #6b7280;
+  padding: 8px 12px;
+  background: white;
+  border-radius: 6px;
+  border-left: 4px solid #667eea;
+}
+
+/* Version History Section */
+.version-history-section {
+  padding: 24px 30px;
+}
+
+.version-history-section h3 {
+  margin: 0 0 20px 0;
+  font-size: 18px;
+  color: #1f2937;
+  font-weight: 600;
+}
+
+/* Empty State */
+.empty-state {
+  text-align: center;
+  padding: 60px 20px;
+  color: #9ca3af;
+}
+
+.empty-icon {
+  font-size: 64px;
+  margin-bottom: 16px;
+}
+
+.empty-state p {
+  margin: 0 0 8px 0;
+  font-size: 18px;
+}
+
+.empty-hint {
+  font-size: 14px !important;
+  color: #d1d5db;
+}
+
+/* Versions List */
+.versions-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.version-item {
+  display: flex;
+  gap: 16px;
+  padding: 20px;
+  background: white;
+  border: 2px solid #e5e7eb;
+  border-radius: 12px;
+  transition: all 0.2s;
+}
+
+.version-item:hover {
+  border-color: #667eea;
+  box-shadow: 0 4px 20px rgba(102, 126, 234, 0.1);
+  transform: translateY(-2px);
+}
+
+.version-badge {
+  flex-shrink: 0;
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border-radius: 12px;
+  font-weight: 700;
+  font-size: 14px;
+}
+
+.version-info {
+  flex: 1;
+}
+
+.version-message {
+  font-size: 16px;
+  font-weight: 600;
+  color: #1f2937;
+  margin-bottom: 8px;
+}
+
+.version-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-bottom: 10px;
+  font-size: 13px;
+  color: #6b7280;
+}
+
+.version-author,
+.version-time,
+.version-date {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.version-stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.stat-badge {
+  padding: 4px 10px;
+  background: rgba(102, 126, 234, 0.1);
+  color: #667eea;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.version-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  align-items: flex-end;
+}
+
+.version-action-btn {
+  padding: 8px 16px;
+  border: 2px solid #e5e7eb;
+  background: white;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+
+.version-action-btn:hover {
+  transform: translateY(-1px);
+}
+
+.version-action-btn.restore {
+  color: #10b981;
+  border-color: #10b981;
+}
+
+.version-action-btn.restore:hover {
+  background: rgba(16, 185, 129, 0.1);
+}
+
+.version-action-btn.compare {
+  color: #667eea;
+  border-color: #667eea;
+}
+
+.version-action-btn.compare:hover {
+  background: rgba(102, 126, 234, 0.1);
+}
+
+.version-action-btn.delete {
+  color: #ef4444;
+  border-color: #ef4444;
+}
+
+.version-action-btn.delete:hover {
+  background: rgba(239, 68, 68, 0.1);
+}
+
+/* Diff Overlay */
+.diff-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1300;
+  animation: fadeIn 0.2s ease-out;
+}
+
+.diff-content {
+  width: 90%;
+  max-width: 800px;
+  max-height: 85vh;
+  background: white;
+  border-radius: 16px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+  overflow-y: auto;
+  animation: slideUp 0.3s ease-out;
+}
+
+.diff-header {
+  padding: 20px 24px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-radius: 16px 16px 0 0;
+}
+
+.diff-header h3 {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 600;
+}
+
+.diff-summary {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  padding: 24px;
+  background: #f9fafb;
+  border-bottom: 2px solid #e5e7eb;
+}
+
+.diff-side {
+  flex: 1;
+  padding: 16px;
+  background: white;
+  border-radius: 10px;
+  border: 2px solid #e5e7eb;
+}
+
+.diff-side h4 {
+  margin: 0 0 12px 0;
+  font-size: 14px;
+  color: #667eea;
+  font-weight: 600;
+}
+
+.diff-stats {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.diff-stat {
+  display: flex;
+  justify-content: space-between;
+  font-size: 13px;
+}
+
+.diff-label {
+  color: #6b7280;
+}
+
+.diff-value {
+  font-weight: 700;
+  color: #1f2937;
+}
+
+.diff-arrow {
+  font-size: 32px;
+  color: #667eea;
+  flex-shrink: 0;
+}
+
+.diff-changes {
+  padding: 20px 24px;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.diff-changes h4 {
+  margin: 0 0 12px 0;
+  font-size: 15px;
+  color: #1f2937;
+  font-weight: 600;
+}
+
+.diff-change {
+  padding: 8px 12px;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+.diff-change.added {
+  background: rgba(16, 185, 129, 0.1);
+  color: #10b981;
+  border-left: 4px solid #10b981;
+}
+
+.diff-change.removed {
+  background: rgba(239, 68, 68, 0.1);
+  color: #ef4444;
+  border-left: 4px solid #ef4444;
+}
+
+.gate-types-comparison {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  padding: 20px 24px;
+}
+
+.gate-types-column h5 {
+  margin: 0 0 12px 0;
+  font-size: 14px;
+  color: #1f2937;
+  font-weight: 600;
+}
+
+.gate-type-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 8px 12px;
+  background: #f9fafb;
+  border-radius: 6px;
+  margin-bottom: 6px;
+}
+
+.gate-type-name {
+  font-size: 13px;
+  color: #6b7280;
+  font-family: 'Courier New', monospace;
+}
+
+.gate-type-count {
+  font-size: 13px;
+  font-weight: 700;
+  color: #667eea;
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(30px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .version-control-content,
+  .diff-content {
+    width: 95%;
+    max-height: 95vh;
+  }
+
+  .version-item {
+    flex-direction: column;
+  }
+
+  .version-actions {
+    flex-direction: row;
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .diff-summary {
+    flex-direction: column;
+  }
+
+  .diff-arrow {
+    transform: rotate(90deg);
+  }
+
+  .gate-types-comparison {
+    grid-template-columns: 1fr;
+  }
+}

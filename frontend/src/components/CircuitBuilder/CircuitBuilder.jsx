@@ -24,6 +24,9 @@ import AIAssistant from "../Common/AIAssistant";
 import SmartSuggestions from "../Common/SmartSuggestions";
 import OptimizationDashboard from "../Common/OptimizationDashboard";
 import LearningPaths from "../Learning/LearningPaths";
+import SharingModal from "../Common/SharingModal";
+import VersionControl from "../Common/VersionControl";
+import CommentSystem from "../Common/CommentSystem";
 import { NOISE_PRESETS, applyReadoutNoise, calculateFidelity } from "../../utils/noiseModels";
 import { addToRecent } from "../../utils/libraryManager";
 import { getSmartSuggestions } from "../../utils/aiNLPProcessor";
@@ -113,6 +116,11 @@ export default function CircuitBuilder({ activeTutorial }) {
   
   // Learning Paths state
   const [showLearningPaths, setShowLearningPaths] = useState(false);
+  
+  // Collaborative Features state
+  const [showSharing, setShowSharing] = useState(false);
+  const [showVersionControl, setShowVersionControl] = useState(false);
+  const [showComments, setShowComments] = useState(false);
 
   // Initialize tutorial if activeTutorial is provided
   useEffect(() => {
@@ -430,8 +438,18 @@ export default function CircuitBuilder({ activeTutorial }) {
             🤖 AI Assistant
           </button>          <button onClick={() => setShowLearningPaths(true)} className="btn-secondary">
             🎓 Learning Paths
-          </button>          <button onClick={() => setShowOptimization(true)} disabled={!gates.length} className="btn-primary">
+          </button>
+          <button onClick={() => setShowOptimization(true)} disabled={!gates.length} className="btn-primary">
             ⚡ Advanced Optimization
+          </button>
+          <button onClick={() => setShowSharing(true)} disabled={!gates.length} className="btn-secondary">
+            📤 Share Circuit
+          </button>
+          <button onClick={() => setShowVersionControl(true)} className="btn-secondary">
+            🕰️ Version Control
+          </button>
+          <button onClick={() => setShowComments(true)} disabled={!gates.length} className="btn-secondary">
+            💬 Comments
           </button>
           <button onClick={() => setShowAnalyzer(true)} disabled={!gates.length} className="btn-secondary">
             🔬 Analyze & Optimize
@@ -830,6 +848,33 @@ export default function CircuitBuilder({ activeTutorial }) {
             setShowLearningPaths(false);
           }}
           onClose={() => setShowLearningPaths(false)}
+        />
+      )}
+
+      {/* Sharing Modal */}
+      {showSharing && (
+        <SharingModal
+          circuit={{ numQubits, gates, name: circuitName, description: circuitDescription }}
+          onClose={() => setShowSharing(false)}
+        />
+      )}
+
+      {/* Version Control */}
+      {showVersionControl && (
+        <VersionControl
+          circuit={{ numQubits, gates, name: circuitName, description: circuitDescription }}
+          onRestoreVersion={(restoredCircuit) => {
+            loadCircuit(restoredCircuit);
+          }}
+          onClose={() => setShowVersionControl(false)}
+        />
+      )}
+
+      {/* Comment System */}
+      {showComments && (
+        <CommentSystem
+          circuit={{ numQubits, gates, name: circuitName }}
+          onClose={() => setShowComments(false)}
         />
       )}
     </div>
