@@ -23,6 +23,7 @@ import ExportModal from "../Common/ExportModal";
 import AIAssistant from "../Common/AIAssistant";
 import SmartSuggestions from "../Common/SmartSuggestions";
 import OptimizationDashboard from "../Common/OptimizationDashboard";
+import LearningPaths from "../Learning/LearningPaths";
 import { NOISE_PRESETS, applyReadoutNoise, calculateFidelity } from "../../utils/noiseModels";
 import { addToRecent } from "../../utils/libraryManager";
 import { getSmartSuggestions } from "../../utils/aiNLPProcessor";
@@ -109,6 +110,9 @@ export default function CircuitBuilder({ activeTutorial }) {
   const [showSmartSuggestions, setShowSmartSuggestions] = useState(false);
   const [smartSuggestions, setSmartSuggestions] = useState([]);
   const [suggestionsPosition, setSuggestionsPosition] = useState({ x: 0, y: 0 });
+  
+  // Learning Paths state
+  const [showLearningPaths, setShowLearningPaths] = useState(false);
 
   // Initialize tutorial if activeTutorial is provided
   useEffect(() => {
@@ -424,8 +428,9 @@ export default function CircuitBuilder({ activeTutorial }) {
           </button>
           <button onClick={() => setShowAIAssistant(true)} className="btn-primary">
             🤖 AI Assistant
-          </button>
-          <button onClick={() => setShowOptimization(true)} disabled={!gates.length} className="btn-primary">
+          </button>          <button onClick={() => setShowLearningPaths(true)} className="btn-secondary">
+            🎓 Learning Paths
+          </button>          <button onClick={() => setShowOptimization(true)} disabled={!gates.length} className="btn-primary">
             ⚡ Advanced Optimization
           </button>
           <button onClick={() => setShowAnalyzer(true)} disabled={!gates.length} className="btn-secondary">
@@ -814,6 +819,17 @@ export default function CircuitBuilder({ activeTutorial }) {
             });
           }}
           onClose={() => setShowOptimization(false)}
+        />
+      )}
+
+      {/* Learning Paths */}
+      {showLearningPaths && (
+        <LearningPaths
+          onLoadCircuit={(circuit) => {
+            loadCircuit(circuit);
+            setShowLearningPaths(false);
+          }}
+          onClose={() => setShowLearningPaths(false)}
         />
       )}
     </div>
