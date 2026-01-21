@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import './VersionControl.jsx';
+import { useState, useEffect } from 'react';
+import './VersionControl.css';
 
 export default function VersionControl({ circuit, onRestoreVersion, onClose }) {
   const [versions, setVersions] = useState([]);
@@ -8,7 +8,7 @@ export default function VersionControl({ circuit, onRestoreVersion, onClose }) {
   const [showDiff, setShowDiff] = useState(false);
 
   // Load versions from localStorage on mount
-  useState(() => {
+  useEffect(() => {
     const savedVersions = JSON.parse(localStorage.getItem('circuitVersions') || '[]');
     setVersions(savedVersions);
   }, []);
