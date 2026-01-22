@@ -9,6 +9,7 @@ import Navigation from './components/Common/Navigation'
 import AchievementNotification from './components/Common/AchievementNotification'
 import WelcomeTour from './components/Common/WelcomeTour'
 import KeyboardShortcuts from './components/Common/KeyboardShortcuts'
+import ProtectedRoute from './components/Auth/ProtectedRoute'
 import useProgressStore from './store/progressStore'
 import './App.css'
 
@@ -47,7 +48,14 @@ function App() {
               path="/tutorials" 
               element={<TutorialsPage onStartTutorial={handleStartTutorial} />} 
             />
-            <Route path="/profile" element={<ProfilePage />} />
+            <Route 
+              path="/profile" 
+              element={
+                <ProtectedRoute>
+                  <ProfilePage />
+                </ProtectedRoute>
+              } 
+            />
             <Route path="/algorithms" element={<AlgorithmsPage />} />
           </Routes>
         </main>

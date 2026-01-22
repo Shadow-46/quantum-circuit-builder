@@ -1,11 +1,15 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.config import settings
-from app.routes import circuit, simulate, algorithms, export
+from app.routes import circuit, simulate, algorithms, export, auth
+from app.database import engine, Base
+
+# Create database tables
+Base.metadata.create_all(bind=engine)
 
 app = FastAPI(
     title="Quantum Circuit Builder API",
-    version="0.1.0",
+    version="2.0.0",
 )
 
 app.add_middleware(
@@ -16,6 +20,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+app.include_router(auth.router, prefix="/api")
 app.include_router(circuit.router, prefix="/api/circuits", tags=["circuits"])
 app.include_router(simulate.router, prefix="/api/simulate", tags=["simulate"])
 app.include_router(algorithms.router, prefix="/api/algorithms", tags=["algorithms"])
