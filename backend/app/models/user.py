@@ -1,4 +1,5 @@
 from sqlalchemy import Column, String, DateTime, Enum as SQLEnum
+from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
 import uuid
 import enum
@@ -23,3 +24,10 @@ class User(Base):
     last_login = Column(DateTime(timezone=True), nullable=True)
     is_active = Column(String, default="true")
     email_verified = Column(String, default="false")
+    
+    # Relationships
+    circuits = relationship("Circuit", back_populates="user", cascade="all, delete-orphan")
+    comments = relationship("Comment", back_populates="user", cascade="all, delete-orphan")
+    learning_progress = relationship("LearningProgress", back_populates="user", cascade="all, delete-orphan")
+    achievements = relationship("Achievement", back_populates="user", cascade="all, delete-orphan")
+
