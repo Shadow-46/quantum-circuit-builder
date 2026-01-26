@@ -1,27 +1,73 @@
 # Getting Started with Quantum Circuit Builder 🚀
 
-Welcome! This guide will help you build your first quantum circuit and explore the platform's features.
+Welcome! This comprehensive guide will help you install, configure, and master the Quantum Circuit Builder platform.
+
+---
+
+## 📊 Platform Overview
+
+**Quantum Circuit Builder** is a full-stack quantum development platform featuring:
+- 💻 Visual circuit design with drag-and-drop
+- 🤖 AI-powered circuit generation and optimization
+- ☁️ Cloud storage with real-time collaboration
+- 🔑 Public REST API for programmatic access
+- 🎓 25 interactive learning lessons
+- 📊 Advanced quantum simulation
+
+**Target Users:** Students, researchers, quantum developers, educators
 
 ---
 
 ## 📋 Table of Contents
 
-1. [Installation](#installation)
-2. [First Circuit](#your-first-quantum-circuit)
-3. [Using the AI Assistant](#using-the-ai-assistant)
-4. [Learning Paths](#learning-paths)
-5. [Optimization](#circuit-optimization)
-6. [Sharing & Collaboration](#sharing--collaboration)
-7. [Tips & Tricks](#tips--tricks)
+1. [Installation & Setup](#installation--setup)
+2. [Authentication & Account](#authentication--account)
+3. [First Circuit](#your-first-quantum-circuit)
+4. [Using the AI Assistant](#using-the-ai-assistant)
+5. [Cloud Features](#cloud-features--collaboration)
+6. [API Access](#api-access)
+7. [Learning Paths](#learning-paths)
+8. [Optimization](#circuit-optimization)
+9. [Tips & Tricks](#tips--tricks)
+10. [Troubleshooting](#troubleshooting)
 
 ---
 
-## 🔧 Installation
+## 🔧 Installation & Setup
+
+### System Requirements
+
+**Minimum:**
+- **OS:** Windows 10+, macOS 10.15+, or Linux (Ubuntu 20.04+)
+- **RAM:** 4 GB
+- **Storage:** 500 MB free space
+- **Browser:** Chrome 90+, Firefox 88+, Safari 14+, or Edge 90+
+
+**Recommended:**
+- **RAM:** 8 GB or more
+- **CPU:** Multi-core processor
+- **Internet:** Stable connection for cloud features
 
 ### Prerequisites
-- **Node.js** 16 or higher ([Download](https://nodejs.org/))
-- **Python** 3.8 or higher ([Download](https://python.org/))
-- **Git** ([Download](https://git-scm.com/))
+
+1. **Node.js 16+** ([Download](https://nodejs.org/))
+   ```bash
+   node --version  # Should be v16.0.0 or higher
+   npm --version   # Should be v8.0.0 or higher
+   ```
+
+2. **Python 3.8+** ([Download](https://python.org/))
+   ```bash
+   python --version  # Should be 3.8.0 or higher
+   pip --version     # Should be 20.0.0 or higher
+   ```
+
+3. **Git** ([Download](https://git-scm.com/))
+   ```bash
+   git --version  # Should be 2.30.0 or higher
+   ```
+
+### Installation Steps
 
 ### Step 1: Clone the Repository
 
@@ -63,6 +109,47 @@ npm run dev
 Navigate to: [http://localhost:5173](http://localhost:5173)
 
 ✅ You should see the Quantum Circuit Builder interface!
+
+---
+
+## 🔐 Authentication & Account
+
+### Create Your Account
+
+1. **Navigate to the Platform**
+   - Open [http://localhost:5173](http://localhost:5173)
+
+2. **Click "Sign Up"**
+   - Located in the top-right corner
+
+3. **Fill Registration Form**
+   ```
+   Email: your.email@example.com
+   Password: (8+ characters, mix of letters & numbers)
+   Username: YourUsername
+   ```
+
+4. **Verify Email** (if enabled)
+   - Check your inbox for verification link
+
+5. **Login**
+   - Use your credentials to access the platform
+
+### User Profile
+
+Once logged in, you can:
+- 📝 **Edit Profile** - Update username, avatar, bio
+- 📊 **View Progress** - See learning achievements
+- 💾 **Manage Circuits** - Access saved circuits
+- 🔑 **API Keys** - Generate keys for programmatic access
+- ⚙️ **Settings** - Configure preferences
+
+### Cloud Sync
+
+✅ **Automatic Synchronization** - All circuits and progress are saved to the cloud  
+✅ **Cross-Device Access** - Login from any device to access your work  
+✅ **Version Control** - Track changes and restore previous versions  
+✅ **Sharing** - Share circuits with public links or collaborators
 
 ---
 
@@ -195,6 +282,143 @@ AI: Circuit Quality Score: 95/100
 ⚠️ Suggestions:
   - Add measurement gates to observe results
 ```
+
+---
+
+## ☁️ Cloud Features & Collaboration
+
+### Saving Your Work
+
+All circuits are **automatically saved to the cloud** when you're logged in:
+
+1. **Auto-Save** - Every change is synced in real-time
+2. **Version Control** - Track circuit evolution
+3. **Cross-Device** - Access from anywhere
+
+### Version Control
+
+Create snapshots of your circuit at important milestones:
+
+1. **Click 🕰️ Version Control**
+2. **Enter Commit Message**
+   ```
+   "Added error correction layer"
+   "Optimized gate count by 30%"
+   "Initial Bell state implementation"
+   ```
+3. **Save Version**
+4. **View History** - See all previous versions
+5. **Compare Versions** - Diff view shows changes
+6. **Restore** - Revert to any previous version
+
+### Real-Time Collaboration
+
+Work on circuits with others simultaneously:
+
+1. **Share Circuit** - Get a shareable link
+2. **Invite Collaborators** - Send link to team members
+3. **See Live Cursors** - Track each user's position
+4. **Chat** - Communicate while editing
+5. **Presence Indicators** - See who's online
+
+**Collaboration Features:**
+- 👥 **Multi-user editing** - Edit circuits together
+- 💬 **Real-time chat** - Discuss while building
+- 🖱️ **Live cursors** - See collaborators' positions
+- 🔔 **Notifications** - Join/leave alerts
+- 🎨 **User colors** - Each person has a unique color
+
+### Sharing Circuits
+
+Share your work with the world:
+
+1. **Click 📤 Share Circuit**
+2. **Choose Visibility**
+   - 🔓 **Public** - Anyone can view
+   - 🔗 **Unlisted** - Only with link
+   - 🔒 **Private** - Only you
+3. **Copy Link** - Share URL
+4. **Generate QR Code** - Mobile scanning
+5. **Export** - Download as JSON/QASM/text
+
+### Comments & Discussion
+
+Engage with the community:
+
+1. **Click 💬 Comments**
+2. **Add General Comment** - Discuss the circuit
+3. **Comment on Specific Gate** - Click gate first
+4. **Reply to Comments** - Start discussions
+5. **Filter Comments** - All/General/Gate-specific
+
+---
+
+## 🔑 API Access
+
+Programmatic access to all platform features via REST API.
+
+### Generate API Key
+
+1. **Login to Platform**
+2. **Navigate to Profile** → **API Keys**
+3. **Click "Create New Key"**
+4. **Configure Key**
+   ```
+   Name: "My Project API Key"
+   Rate Limit: 1000 requests/hour
+   Expiration: 90 days (or never)
+   ```
+5. **Copy Secret** - Shown only once! Save it securely.
+
+### Using Your API Key
+
+**JavaScript Example:**
+```javascript
+const axios = require('axios');
+
+const API_KEY = 'qcb_your_secret_key_here';
+const BASE_URL = 'http://localhost:8000/api/v1';
+
+// Get all your circuits
+const response = await axios.get(`${BASE_URL}/circuits`, {
+  headers: { 'Authorization': `Bearer ${API_KEY}` }
+});
+
+console.log(response.data);
+```
+
+**Python Example:**
+```python
+import requests
+
+API_KEY = 'qcb_your_secret_key_here'
+BASE_URL = 'http://localhost:8000/api/v1'
+
+# Get all your circuits
+response = requests.get(
+    f'{BASE_URL}/circuits',
+    headers={'Authorization': f'Bearer {API_KEY}'}
+)
+
+print(response.json())
+```
+
+**cURL Example:**
+```bash
+curl -X GET "http://localhost:8000/api/v1/circuits" \
+  -H "Authorization: Bearer qcb_your_secret_key_here"
+```
+
+### API Features
+
+- ✅ **30+ Endpoints** - Full platform access
+- ✅ **Rate Limiting** - Configurable limits (100-10,000/hr)
+- ✅ **OpenAPI Docs** - Interactive documentation at `/docs`
+- ✅ **Usage Analytics** - Track your API consumption
+- ✅ **Secure** - Bcrypt-hashed keys
+- ✅ **Versioned** - `/api/v1/` with backward compatibility
+
+**Explore API:** [http://localhost:8000/docs](http://localhost:8000/docs)
 
 ---
 
